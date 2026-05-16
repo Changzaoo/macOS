@@ -1,0 +1,91 @@
+import type { AppConfig } from '../types/app';
+
+export const apps: AppConfig[] = [
+  {
+    id: 'crescer',
+    name: 'Crescer',
+    url: 'https://crescerb.vercel.app/',
+    icon: 'TrendingUp',
+    category: 'Business',
+    defaultSize: { width: 1100, height: 720 },
+    permissionKey: 'crescer',
+  },
+  {
+    id: 'gardenz',
+    name: 'Gardenz',
+    url: 'https://gardenz.vercel.app/',
+    icon: 'Leaf',
+    category: 'Tools',
+    defaultSize: { width: 1100, height: 720 },
+    permissionKey: 'gardenz',
+  },
+  {
+    id: 'criptoHub',
+    name: 'Cripto Hub',
+    url: 'https://cripto-hub.vercel.app/',
+    icon: 'Coins',
+    category: 'Crypto',
+    defaultSize: { width: 1200, height: 760 },
+    permissionKey: 'criptoHub',
+  },
+  {
+    id: 'bitrade',
+    name: 'Bitrade',
+    url: 'https://bitrade-eight.vercel.app/',
+    icon: 'BarChart3',
+    category: 'Trading',
+    defaultSize: { width: 1200, height: 760 },
+    permissionKey: 'bitrade',
+  },
+  {
+    id: 'trade',
+    name: 'Trade',
+    url: 'https://trade-eosin-kappa.vercel.app/',
+    icon: 'CandlestickChart',
+    category: 'Trading',
+    defaultSize: { width: 1200, height: 760 },
+    permissionKey: 'trade',
+  },
+  {
+    id: 'betintel',
+    name: 'BetIntel',
+    url: 'https://betintel-api.vercel.app/',
+    icon: 'Trophy',
+    category: 'Sports',
+    defaultSize: { width: 1200, height: 760 },
+    permissionKey: 'betintel',
+  },
+  {
+    id: 'yield',
+    name: 'Yield',
+    url: 'https://yield-two-orcin.vercel.app/',
+    icon: 'LineChart',
+    category: 'DeFi',
+    defaultSize: { width: 1200, height: 760 },
+    permissionKey: 'yield',
+  },
+  {
+    id: 'aura',
+    name: 'Aura',
+    url: 'https://aura-full.vercel.app/',
+    icon: 'Sparkles',
+    category: 'Game',
+    defaultSize: { width: 1200, height: 760 },
+    permissionKey: 'aura',
+  },
+];
+
+export const internalApps = [
+  {
+    id: 'settings',
+    name: 'Configurações',
+    icon: 'Settings',
+    defaultSize: { width: 720, height: 540 },
+  },
+  {
+    id: 'admin',
+    name: 'Painel Admin',
+    icon: 'Shield',
+    defaultSize: { width: 860, height: 600 },
+  },
+];
