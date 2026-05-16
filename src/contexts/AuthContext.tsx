@@ -21,20 +21,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        const profile = await getUserProfile(firebaseUser.uid);
-        if (profile && profile.active) {
-          setUser(profile);
-        } else {
-          setUser(null);
+    let unsub: (() => void) | undefined;
+    try {
+      unsub = onAuthStateChanged(
+        auth,
+        async (firebaseUser) => {
+          try {
+            if (firebaseUser) {
+              const profile = await getUserProfile(firebaseUser.uid);
+              setUser(profile && profile.active ? profile : null);
+            } else {
+              setUser(null);
+            }
+          } catch {
+            setUser(null);
+          }
+          setLoading(false);
+        },
+        (error) => {
+          console.error('Firebase auth error:', error.message);
+          setLoading(false);
         }
-      } else {
-        setUser(null);
-      }
+      );
+    } catch (err) {
+      console.error('Firebase init error:', err);
       setLoading(false);
-    });
-    return unsub;
+    }
+    return () => unsub?.();
   }, []);
 
   return (
