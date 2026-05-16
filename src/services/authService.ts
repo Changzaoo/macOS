@@ -72,7 +72,7 @@ export const createFirstAccount = async (
 export const loginWithoutPassword = async (username: string): Promise<UserProfile> => {
   if (!auth || !db) throw new Error(ERR);
 
-  const email = `${username}@sistema.local`;
+  const email = toEmail(username);
 
   // Tentativa 1: criar conta nova
   try {
@@ -160,13 +160,18 @@ export const setUserPassword = async (newPassword: string): Promise<void> => {
   });
 };
 
+// Se o input contiver @, usa como email direto; senão adiciona @sistema.local
+function toEmail(input: string): string {
+  return input.includes('@') ? input : `${input}@sistema.local`;
+}
+
 export const loginWithUsername = async (
   username: string,
   password: string
 ): Promise<UserProfile> => {
   if (!auth || !db) throw new Error(ERR);
 
-  const email = `${username}@sistema.local`;
+  const email = toEmail(username);
   const cred = await signInWithEmailAndPassword(auth, email, password);
   const snap = await getDoc(doc(db, 'users', cred.user.uid));
   if (!snap.exists()) throw new Error('Usuário não encontrado no sistema.');

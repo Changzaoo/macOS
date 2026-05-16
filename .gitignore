@@ -20,6 +20,9 @@ dist-ssr
 .env.*
 !.env.example
 
+# Seed / setup scripts com credenciais (nunca commitar)
+scripts/seed-user.js
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
