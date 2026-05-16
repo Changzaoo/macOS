@@ -4,12 +4,19 @@ import type { AppPermissions, UserPermissions } from '../types/user';
 export const usePermissions = () => {
   const { user } = useAuth();
 
-  const can = (_key: keyof Omit<UserPermissions, 'apps'>): boolean => true;
-  const canOpenApp = (_appId: keyof AppPermissions): boolean => true;
+  const can = (key: keyof Omit<UserPermissions, 'apps'>): boolean => {
+    if (!user) return false;
+    return user.permissions[key] === true;
+  };
 
-  const isOwner = true;
-  const isAdmin = true;
-  const isManager = true;
+  const canOpenApp = (appId: keyof AppPermissions): boolean => {
+    if (!user) return false;
+    return user.permissions.canOpenApps && user.permissions.apps[appId] === true;
+  };
+
+  const isOwner = user?.role === 'owner';
+  const isAdmin = user?.role === 'admin' || user?.role === 'owner';
+  const isManager = user?.role === 'manager' || isAdmin;
 
   return { can, canOpenApp, isOwner, isAdmin, isManager, user };
 };

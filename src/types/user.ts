@@ -31,6 +31,7 @@ export type UserProfile = {
   role: UserRole;
   avatarUrl?: string;
   createdAt: string;
+  updatedAt?: string;
   createdBy?: string;
   active: boolean;
   theme: 'light' | 'dark' | 'auto';
