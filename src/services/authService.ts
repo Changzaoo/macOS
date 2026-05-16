@@ -65,16 +65,17 @@ export const createFirstAccount = async (
   return profile;
 };
 
-// Primeiro acesso sem senha: cria a conta (se for o primeiro usuário)
-// ou entra com a senha temporária (se a conta já existe e passwordSet === false)
+// Primeiro acesso sem senha.
+// Estratégia: tenta criar a conta primeiro (Firebase Auth usa domínio diferente do Firestore).
+// Se a conta já existe (email-already-in-use), tenta entrar com a senha temporária.
+// Só lê/escreve no Firestore DEPOIS que a autenticação passou.
 export const loginWithoutPassword = async (username: string): Promise<UserProfile> => {
   if (!auth || !db) throw new Error(ERR);
 
   const email = `${username}@sistema.local`;
-  const firstExists = await checkFirstUserExists();
 
-  if (!firstExists) {
-    // Criar primeiro admin com senha temporária
+  // Tentativa 1: criar conta nova
+  try {
     const cred = await createUserWithEmailAndPassword(auth, email, FIRST_ACCESS_TEMP);
     const uid = cred.user.uid;
     const now = new Date().toISOString();
@@ -102,24 +103,48 @@ export const loginWithoutPassword = async (username: string): Promise<UserProfil
     });
     await logAudit('first_access_create', uid);
     return profile;
+
+  } catch (createErr: unknown) {
+    const code = (createErr as { code?: string })?.code ?? '';
+
+    // Conta já existe — seguir para Tentativa 2
+    if (code !== 'auth/email-already-in-use') {
+      if (code.includes('network') || code.includes('blocked')) {
+        throw new Error('Sem conexão com o Firebase. Desative extensões bloqueadoras (ad blocker) e tente novamente.');
+      }
+      throw new Error('Erro ao criar conta: ' + (createErr instanceof Error ? createErr.message : code));
+    }
   }
 
-  // Usuário já existe — tentar entrar com senha temporária
-  let cred;
+  // Tentativa 2: conta já existe — entrar com senha temporária (passwordSet === false)
   try {
-    cred = await signInWithEmailAndPassword(auth, email, FIRST_ACCESS_TEMP);
-  } catch {
-    throw new Error('Usuário não encontrado ou já possui senha definida. Use sua senha para entrar.');
+    const cred = await signInWithEmailAndPassword(auth, email, FIRST_ACCESS_TEMP);
+
+    const snap = await getDoc(doc(db, 'users', cred.user.uid));
+    if (!snap.exists()) throw new Error('Perfil não encontrado. Contate o administrador.');
+
+    const profile = snap.data() as UserProfile;
+
+    if (profile.passwordSet === true) {
+      await signOut(auth);
+      throw new Error('Você já definiu uma senha. Use-a para entrar no campo acima.');
+    }
+    if (!profile.active) {
+      await signOut(auth);
+      throw new Error('Conta desativada. Contate o administrador.');
+    }
+
+    return profile;
+
+  } catch (signInErr: unknown) {
+    // Re-lança erros já tratados
+    if (signInErr instanceof Error &&
+        (signInErr.message.includes('senha') || signInErr.message.includes('desativada') || signInErr.message.includes('Perfil'))) {
+      throw signInErr;
+    }
+    // Senha temporária rejeitada = usuário já trocou a senha
+    throw new Error('Você já definiu uma senha. Use-a para entrar no campo acima.');
   }
-
-  const snap = await getDoc(doc(db, 'users', cred.user.uid));
-  if (!snap.exists()) throw new Error('Perfil de usuário não encontrado.');
-
-  const profile = snap.data() as UserProfile;
-  if (profile.passwordSet === true) throw new Error('Este usuário já definiu uma senha. Use-a para entrar.');
-  if (!profile.active) throw new Error('Conta desativada. Contate o administrador.');
-
-  return profile;
 };
 
 // Define a senha do usuário logado e marca passwordSet: true
