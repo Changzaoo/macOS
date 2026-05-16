@@ -1,6 +1,7 @@
 import React from 'react';
 import { DesktopProvider } from '../contexts/DesktopContext';
 import { Desktop } from '../components/desktop/Desktop';
+import { PasswordSetupModal } from '../components/desktop/PasswordSetupModal';
 import { useAuth } from '../contexts/AuthContext';
 
 export const DesktopPage: React.FC = () => {
@@ -10,11 +11,8 @@ export const DesktopPage: React.FC = () => {
 
   return (
     <DesktopProvider>
-      <DesktopWrapper />
+      <Desktop />
+      {user.passwordSet === false && <PasswordSetupModal />}
     </DesktopProvider>
   );
-};
-
-const DesktopWrapper: React.FC = () => {
-  return <Desktop />;
 };

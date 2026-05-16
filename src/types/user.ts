@@ -33,6 +33,7 @@ export type UserProfile = {
   createdAt: string;
   updatedAt?: string;
   createdBy?: string;
+  passwordSet?: boolean;
   active: boolean;
   theme: 'light' | 'dark' | 'auto';
   accentColor: string;

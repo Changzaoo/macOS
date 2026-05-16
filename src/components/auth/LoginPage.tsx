@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Lock, User, Eye, EyeOff } from 'lucide-react';
-import { loginWithUsername } from '../../services/authService';
+import { Lock, User, Eye, EyeOff, LogIn } from 'lucide-react';
+import { loginWithUsername, loginWithoutPassword } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
 import { useFirstUserCheck } from '../../hooks/useFirstUserCheck';
 import { Button } from '../ui/Button';
@@ -13,6 +13,7 @@ export const LoginPage: React.FC = () => {
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [firstLoading, setFirstLoading] = useState(false);
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const { firstUserExists, loading: checking } = useFirstUserCheck();
@@ -37,6 +38,24 @@ export const LoginPage: React.FC = () => {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleFirstAccess = async () => {
+    if (!username.trim()) {
+      setError('Digite o nome de usuário para o primeiro acesso.');
+      return;
+    }
+    setError('');
+    setFirstLoading(true);
+    try {
+      const profile = await loginWithoutPassword(username.trim());
+      setUser(profile);
+      navigate('/desktop');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Erro no primeiro acesso.');
+    } finally {
+      setFirstLoading(false);
     }
   };
 
@@ -116,18 +135,28 @@ export const LoginPage: React.FC = () => {
             </Button>
           </form>
 
-          {!checking && !firstUserExists && (
-            <div className="mt-6 text-center">
-              <div className="h-px bg-white/10 mb-4" />
-              <p className="text-white/40 text-xs mb-2">Nenhum administrador cadastrado</p>
-              <button
-                onClick={() => navigate('/setup')}
-                className="text-blue-400 hover:text-blue-300 text-sm font-medium transition-colors"
-              >
-                Criar primeira conta →
-              </button>
-            </div>
-          )}
+          {/* Primeiro acesso sem senha */}
+          <div className="mt-6">
+            <div className="h-px bg-white/10 mb-4" />
+            {!checking && !firstUserExists ? (
+              <p className="text-white/40 text-xs text-center mb-3">
+                Nenhum administrador cadastrado
+              </p>
+            ) : (
+              <p className="text-white/30 text-xs text-center mb-3">
+                Primeiro acesso? Entre sem senha e defina uma depois.
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={handleFirstAccess}
+              disabled={firstLoading}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              <LogIn size={15} />
+              {firstLoading ? 'Entrando…' : 'Entrar sem senha (primeiro acesso)'}
+            </button>
+          </div>
         </div>
       </motion.div>
     </div>
