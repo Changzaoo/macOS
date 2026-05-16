@@ -1,58 +1,23 @@
-import {
-  doc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  collection,
-  query,
-  orderBy,
-} from 'firebase/firestore';
-import { db } from '../config/firebase';
 import type { UserProfile, UserPermissions } from '../types/user';
-import { logAudit } from './authService';
 
-const ERR_NOT_CONFIGURED = 'Firebase não configurado. Verifique as variáveis de ambiente.';
+export const getUserProfile = async (_uid: string): Promise<UserProfile | null> => null;
 
-export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
-  if (!db) return null;
-  const snap = await getDoc(doc(db, 'users', uid));
-  if (!snap.exists()) return null;
-  return snap.data() as UserProfile;
-};
-
-export const getAllUsers = async (): Promise<UserProfile[]> => {
-  if (!db) throw new Error(ERR_NOT_CONFIGURED);
-  const q = query(collection(db, 'users'), orderBy('createdAt', 'asc'));
-  const snap = await getDocs(q);
-  return snap.docs.map((d) => d.data() as UserProfile);
-};
+export const getAllUsers = async (): Promise<UserProfile[]> => [];
 
 export const updateUserProfile = async (
-  actorUid: string,
-  targetUid: string,
-  updates: Partial<UserProfile>
-): Promise<void> => {
-  if (!db) throw new Error(ERR_NOT_CONFIGURED);
-  await updateDoc(doc(db, 'users', targetUid), updates as Record<string, unknown>);
-  await logAudit('user_updated', actorUid, targetUid, { fields: Object.keys(updates) });
-};
+  _actorUid: string,
+  _targetUid: string,
+  _updates: Partial<UserProfile>
+): Promise<void> => {};
 
 export const updateUserPermissions = async (
-  actorUid: string,
-  targetUid: string,
-  permissions: UserPermissions
-): Promise<void> => {
-  if (!db) throw new Error(ERR_NOT_CONFIGURED);
-  await updateDoc(doc(db, 'users', targetUid), { permissions });
-  await logAudit('permissions_updated', actorUid, targetUid);
-};
+  _actorUid: string,
+  _targetUid: string,
+  _permissions: UserPermissions
+): Promise<void> => {};
 
 export const toggleUserActive = async (
-  actorUid: string,
-  targetUid: string,
-  active: boolean
-): Promise<void> => {
-  if (!db) throw new Error(ERR_NOT_CONFIGURED);
-  await updateDoc(doc(db, 'users', targetUid), { active });
-  await logAudit(active ? 'user_activated' : 'user_deactivated', actorUid, targetUid);
-};
+  _actorUid: string,
+  _targetUid: string,
+  _active: boolean
+): Promise<void> => {};
