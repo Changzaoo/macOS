@@ -1,39 +1,88 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import * as Icons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { getFaviconUrl } from '../../lib/favicon';
 
 type AppIconProps = {
   icon: string;
   name: string;
+  url?: string;
+  gradient?: string;
   onClick: () => void;
   isOpen?: boolean;
   size?: 'sm' | 'md' | 'lg';
+  showLabel?: boolean;
 };
 
-export const AppIcon: React.FC<AppIconProps> = ({ icon, name, onClick, isOpen, size = 'md' }) => {
+export const AppIcon: React.FC<AppIconProps> = ({
+  icon, name, url, gradient, onClick, isOpen, size = 'md', showLabel = true,
+}) => {
+  const [faviconError, setFaviconError] = useState(false);
   const IconComponent = (Icons as unknown as Record<string, LucideIcon>)[icon] ?? Icons.AppWindow;
 
-  const iconSize = size === 'sm' ? 20 : size === 'lg' ? 32 : 26;
-  const containerSize = size === 'sm' ? 'w-12 h-12' : size === 'lg' ? 'w-20 h-20' : 'w-14 h-14';
+  const px = size === 'sm' ? 44 : size === 'lg' ? 72 : 56;
+  const iconPx = size === 'sm' ? 22 : size === 'lg' ? 36 : 28;
+  const faviconSz = size === 'sm' ? 32 : size === 'lg' ? 52 : 40;
+  const radius = size === 'sm' ? 12 : size === 'lg' ? 18 : 14;
+
+  const faviconUrl = url && !faviconError ? getFaviconUrl(url, 128) : '';
+
+  const bg = gradient ?? 'linear-gradient(145deg, #3b82f6, #1d4ed8)';
 
   return (
     <motion.div
-      className="flex flex-col items-center gap-1 cursor-pointer group"
+      className="flex flex-col items-center gap-1.5 cursor-pointer select-none"
       onClick={onClick}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.08 }}
+      whileTap={{ scale: 0.93 }}
     >
       <div
-        className={`${containerSize} rounded-2xl bg-gradient-to-br from-blue-400/80 to-purple-600/80 backdrop-blur-sm border border-white/20 flex items-center justify-center shadow-lg group-hover:shadow-blue-500/30 transition-all duration-200`}
+        style={{
+          width: px,
+          height: px,
+          borderRadius: radius,
+          background: faviconUrl ? 'rgba(255,255,255,0.92)' : bg,
+          border: '1px solid rgba(255,255,255,0.18)',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          position: 'relative',
+        }}
       >
-        <IconComponent size={iconSize} className="text-white" />
+        {faviconUrl ? (
+          <img
+            src={faviconUrl}
+            alt={name}
+            width={faviconSz}
+            height={faviconSz}
+            onError={() => setFaviconError(true)}
+            style={{ objectFit: 'contain', borderRadius: 6 }}
+          />
+        ) : (
+          <IconComponent size={iconPx} className="text-white drop-shadow" />
+        )}
       </div>
-      <span className="text-white text-xs font-medium text-shadow opacity-90 text-center leading-tight max-w-[60px] truncate">
-        {name}
-      </span>
+
+      {showLabel && (
+        <span
+          className="text-white text-xs font-medium text-center leading-tight"
+          style={{
+            maxWidth: px + 12,
+            textShadow: '0 1px 4px rgba(0,0,0,0.7)',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {name}
+        </span>
+      )}
+
       {isOpen && (
-        <div className="w-1 h-1 rounded-full bg-white/80 shadow-sm" />
+        <div style={{ width: 4, height: 4, borderRadius: '50%', background: 'rgba(255,255,255,0.85)', marginTop: -2 }} />
       )}
     </motion.div>
   );

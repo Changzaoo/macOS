@@ -11,13 +11,8 @@ import type { WindowState } from '../../types/window';
 import { AdminPanel } from '../admin/AdminPanel';
 import { SettingsPanel } from '../settings/SettingsPanel';
 
-type AppWindowProps = {
-  window: WindowState;
-};
-
+type AppWindowProps = { window: WindowState };
 type LoadState = 'loading' | 'loaded' | 'blocked';
-
-// ── Small helper components ──────────────────────────────────────────────────
 
 const TrafficLight: React.FC<{
   color: 'red' | 'yellow' | 'green';
@@ -25,7 +20,7 @@ const TrafficLight: React.FC<{
   title: string;
 }> = ({ color, onClick, title }) => {
   const bg = { red: '#FF5F57', yellow: '#FFBD2E', green: '#28CA41' }[color];
-  const hoverBg = { red: '#E0443C', yellow: '#DFA020', green: '#20A832' }[color];
+  const hover = { red: '#E0443C', yellow: '#DFA020', green: '#20A832' }[color];
   const [hovered, setHovered] = useState(false);
   return (
     <button
@@ -34,7 +29,7 @@ const TrafficLight: React.FC<{
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className="w-3 h-3 rounded-full flex items-center justify-center transition-colors"
-      style={{ background: hovered ? hoverBg : bg }}
+      style={{ background: hovered ? hover : bg }}
     >
       {hovered && (
         <span style={{ fontSize: 8, lineHeight: 1, color: 'rgba(0,0,0,0.5)', fontWeight: 900 }}>
@@ -55,35 +50,33 @@ const NavBtn: React.FC<{
     title={title}
     onClick={onClick}
     disabled={disabled}
-    className="w-6 h-6 flex items-center justify-center rounded-md transition-colors text-white/40 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:cursor-default"
+    className="w-6 h-6 flex items-center justify-center rounded-md transition-colors text-white/35 hover:text-white hover:bg-white/10 disabled:opacity-20 disabled:cursor-default"
   >
     {children}
   </button>
 );
 
-// ── Blocked screen ───────────────────────────────────────────────────────────
-
 const BlockedScreen: React.FC<{ url: string }> = ({ url }) => (
-  <div className="flex flex-col items-center justify-center h-full bg-gray-950 p-8 text-center">
-    <div className="w-16 h-16 rounded-full bg-orange-500/15 flex items-center justify-center mb-5">
-      <AlertTriangle size={28} className="text-orange-400" />
+  <div className="flex flex-col items-center justify-center h-full p-8 text-center"
+    style={{ background: 'rgba(10,10,14,0.98)' }}>
+    <div className="w-14 h-14 rounded-full flex items-center justify-center mb-5"
+      style={{ background: 'rgba(245,158,11,0.12)' }}>
+      <AlertTriangle size={26} className="text-amber-400" />
     </div>
-    <h3 className="text-white font-semibold text-lg mb-2">Não foi possível carregar</h3>
+    <h3 className="text-white font-semibold text-base mb-2">Não foi possível carregar</h3>
     <p className="text-white/40 text-sm max-w-xs mb-1 leading-relaxed">
       Este site bloqueou a visualização incorporada por políticas de segurança.
     </p>
     <p className="text-white/20 text-xs mb-6 font-mono truncate max-w-xs">{url}</p>
     <button
       onClick={() => globalThis.open(url, '_blank')}
-      className="px-6 py-2.5 bg-blue-500 hover:bg-blue-400 text-white rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
+      className="px-5 py-2 text-white rounded-xl text-sm font-medium transition-colors flex items-center gap-2 liquid-button"
     >
-      <ExternalLink size={14} />
+      <ExternalLink size={13} />
       Abrir no navegador
     </button>
   </div>
 );
-
-// ── Main component ───────────────────────────────────────────────────────────
 
 export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
   const {
@@ -92,7 +85,6 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
   } = useDesktop();
 
   const currentUrl = win.currentUrl || win.url;
-
   const [urlInput, setUrlInput] = useState(currentUrl);
   const [isEditingUrl, setIsEditingUrl] = useState(false);
   const [iframeKey, setIframeKey] = useState(0);
@@ -104,24 +96,20 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
   const dragRef = useRef<{ sx: number; sy: number; wx: number; wy: number } | null>(null);
   const resizeRef = useRef<{ sx: number; sy: number; sw: number; sh: number } | null>(null);
 
-  // Keep URL input in sync when navigating from context
   useEffect(() => {
     if (!isEditingUrl) setUrlInput(currentUrl);
   }, [currentUrl, isEditingUrl]);
 
-  // Fake progress bar animation while loading
   useEffect(() => {
     if (win.isInternal) return;
     if (loadState === 'loading') {
       setProgress(10);
-      const t1 = setTimeout(() => setProgress(40), 300);
-      const t2 = setTimeout(() => setProgress(70), 800);
-      const t3 = setTimeout(() => setProgress(90), 1800);
+      const t1 = setTimeout(() => setProgress(45), 300);
+      const t2 = setTimeout(() => setProgress(72), 900);
+      const t3 = setTimeout(() => setProgress(90), 2000);
       return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
     }
-    if (loadState === 'loaded' || loadState === 'blocked') {
-      setProgress(100);
-    }
+    if (loadState === 'loaded' || loadState === 'blocked') setProgress(100);
   }, [loadState, iframeKey, win.isInternal]);
 
   const navigate = useCallback((raw: string) => {
@@ -158,7 +146,6 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
         }
       }
     } catch {
-      // SecurityError = cross-origin iframe = loaded successfully
       setLoadState('loaded');
     }
   }, [currentUrl, win.id, isEditingUrl, updateWindowCurrentUrl]);
@@ -168,14 +155,9 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
     e.preventDefault();
     dragRef.current = { sx: e.clientX, sy: e.clientY, wx: win.x, wy: win.y };
     focusWindow(win.id);
-
     const onMove = (ev: MouseEvent) => {
       if (!dragRef.current) return;
-      updateWindowPosition(
-        win.id,
-        dragRef.current.wx + ev.clientX - dragRef.current.sx,
-        dragRef.current.wy + ev.clientY - dragRef.current.sy,
-      );
+      updateWindowPosition(win.id, dragRef.current.wx + ev.clientX - dragRef.current.sx, dragRef.current.wy + ev.clientY - dragRef.current.sy);
     };
     const onUp = () => { dragRef.current = null; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
     document.addEventListener('mousemove', onMove);
@@ -187,11 +169,7 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
     resizeRef.current = { sx: e.clientX, sy: e.clientY, sw: win.width, sh: win.height };
     const onMove = (ev: MouseEvent) => {
       if (!resizeRef.current) return;
-      updateWindowSize(
-        win.id,
-        Math.max(520, resizeRef.current.sw + ev.clientX - resizeRef.current.sx),
-        Math.max(380, resizeRef.current.sh + ev.clientY - resizeRef.current.sy),
-      );
+      updateWindowSize(win.id, Math.max(520, resizeRef.current.sw + ev.clientX - resizeRef.current.sx), Math.max(380, resizeRef.current.sh + ev.clientY - resizeRef.current.sy));
     };
     const onUp = () => { resizeRef.current = null; document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp); };
     document.addEventListener('mousemove', onMove);
@@ -211,82 +189,70 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
   const windowStyle: React.CSSProperties = win.isFullscreen
     ? { position: 'fixed', inset: 0, zIndex: win.zIndex, borderRadius: 0 }
     : win.isMaximized
-    ? { position: 'fixed', left: 0, top: 36, right: 0, bottom: 72, zIndex: win.zIndex, borderRadius: 0 }
-    : { position: 'fixed', left: win.x, top: win.y, width: win.width, height: win.height, zIndex: win.zIndex, borderRadius: 12 };
+    ? { position: 'fixed', left: 0, top: 36, right: 0, bottom: 80, zIndex: win.zIndex, borderRadius: 0 }
+    : { position: 'fixed', left: win.x, top: win.y, width: win.width, height: win.height, zIndex: win.zIndex, borderRadius: 14 };
 
   return (
     <AnimatePresence>
       <motion.div
         key={win.id}
-        initial={{ opacity: 0, scale: 0.94, y: 16 }}
+        initial={{ opacity: 0, scale: 0.92, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+        exit={{ opacity: 0, scale: 0.88, y: 24 }}
         transition={{ type: 'spring', stiffness: 480, damping: 36 }}
         style={{
           ...windowStyle,
           display: 'flex',
           flexDirection: 'column',
           overflow: 'hidden',
-          boxShadow: '0 32px 96px rgba(0,0,0,0.7), 0 0 0 0.5px rgba(255,255,255,0.08)',
+          boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 0 0.5px rgba(255,255,255,0.08)',
         }}
         onClick={() => focusWindow(win.id)}
       >
-        {/* ── Title / Browser bar ── */}
+        {/* Title / Browser bar */}
         <div
           onMouseDown={startDrag}
+          className="window-chrome"
           style={{
             display: 'flex',
             alignItems: 'center',
             gap: 6,
-            height: win.isInternal ? 40 : 48,
+            height: win.isInternal ? 40 : 50,
             padding: '0 12px',
             flexShrink: 0,
             cursor: 'default',
-            background: 'rgba(26,26,30,0.98)',
-            borderBottom: '1px solid rgba(255,255,255,0.07)',
             userSelect: 'none',
           }}
         >
           {/* Traffic lights */}
-          <div
-            className="flex items-center gap-1.5 mr-1"
-            onMouseDown={(e) => e.stopPropagation()}
-          >
+          <div className="flex items-center gap-1.5 mr-1" onMouseDown={(e) => e.stopPropagation()}>
             <TrafficLight color="red" onClick={() => closeWindow(win.id)} title="Fechar" />
             <TrafficLight color="yellow" onClick={() => minimizeWindow(win.id)} title="Minimizar" />
             <TrafficLight color="green" onClick={() => maximizeWindow(win.id)} title="Maximizar" />
           </div>
 
           {win.isInternal ? (
-            /* Internal app: just centered title */
             <div className="flex-1 flex items-center justify-center gap-2 pointer-events-none">
               <IconComponent size={13} className="text-white/40" />
-              <span className="text-white/60 text-xs font-medium">{win.title}</span>
+              <span className="text-white/55 text-xs font-medium">{win.title}</span>
             </div>
           ) : (
             <>
-              {/* Nav buttons */}
               <div className="flex items-center gap-0.5 flex-shrink-0" onMouseDown={(e) => e.stopPropagation()}>
-                <NavBtn onClick={() => {}} title="Voltar" disabled>
-                  <ChevronLeft size={15} />
-                </NavBtn>
-                <NavBtn onClick={() => {}} title="Avançar" disabled>
-                  <ChevronRight size={15} />
-                </NavBtn>
+                <NavBtn onClick={() => {}} title="Voltar" disabled><ChevronLeft size={15} /></NavBtn>
+                <NavBtn onClick={() => {}} title="Avançar" disabled><ChevronRight size={15} /></NavBtn>
               </div>
 
               {/* URL bar */}
               <div
                 className="flex-1 flex items-center gap-2 px-3 rounded-lg cursor-text mx-1"
                 style={{
-                  height: 30,
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.09)',
+                  height: 32,
+                  background: 'rgba(255,255,255,0.055)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  backdropFilter: 'blur(8px)',
                 }}
-                onClick={() => {
-                  setIsEditingUrl(true);
-                  setTimeout(() => urlInputRef.current?.select(), 0);
-                }}
+                onClick={() => { setIsEditingUrl(true); setTimeout(() => urlInputRef.current?.select(), 0); }}
                 onMouseDown={(e) => e.stopPropagation()}
               >
                 {isEditingUrl ? (
@@ -306,19 +272,15 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
                       ? <Lock size={10} className="text-green-400 flex-shrink-0" />
                       : <Globe size={10} className="text-white/25 flex-shrink-0" />
                     }
-                    <span className="flex-1 text-white/55 text-xs truncate text-center">
+                    <span className="flex-1 text-white/50 text-xs truncate text-center">
                       {loadState === 'loading' ? 'Carregando…' : displayDomain()}
                     </span>
                   </>
                 )}
               </div>
 
-              {/* Right buttons */}
               <div className="flex items-center gap-0.5 flex-shrink-0" onMouseDown={(e) => e.stopPropagation()}>
-                <NavBtn
-                  onClick={() => { setLoadState('loading'); setProgress(0); setIframeKey((k) => k + 1); }}
-                  title="Recarregar"
-                >
+                <NavBtn onClick={() => { setLoadState('loading'); setProgress(0); setIframeKey((k) => k + 1); }} title="Recarregar">
                   <RefreshCw size={12} className={loadState === 'loading' ? 'animate-spin' : ''} />
                 </NavBtn>
                 <NavBtn onClick={() => globalThis.open(currentUrl, '_blank')} title="Abrir em nova aba">
@@ -332,18 +294,18 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
           )}
         </div>
 
-        {/* ── Loading progress bar ── */}
+        {/* Progress bar */}
         {!win.isInternal && (
-          <div style={{ height: 2, background: 'rgba(255,255,255,0.04)', flexShrink: 0 }}>
+          <div style={{ height: 2, background: 'rgba(255,255,255,0.03)', flexShrink: 0 }}>
             <motion.div
-              style={{ height: '100%', background: 'rgba(99,179,237,0.9)', transformOrigin: 'left' }}
+              style={{ height: '100%', background: 'linear-gradient(90deg, #60a5fa, #818cf8)', transformOrigin: 'left' }}
               animate={{ width: `${progress}%`, opacity: loadState === 'loaded' && progress === 100 ? 0 : 1 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
+              transition={{ duration: 0.35, ease: 'easeOut' }}
             />
           </div>
         )}
 
-        {/* ── Content ── */}
+        {/* Content */}
         <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: win.isInternal ? undefined : '#fff' }}>
           {win.isInternal ? (
             win.appId === 'settings' ? <SettingsPanel /> : <AdminPanel />
@@ -352,12 +314,11 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
           ) : (
             <>
               {loadState === 'loading' && (
-                <div
-                  className="absolute inset-0 flex flex-col items-center justify-center z-10"
-                  style={{ background: 'rgba(18,18,22,0.96)' }}
-                >
-                  <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center mb-4 shadow-lg">
-                    <IconComponent size={20} className="text-white" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center z-10"
+                  style={{ background: 'rgba(12,12,18,0.97)' }}>
+                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
+                    style={{ background: 'linear-gradient(145deg, #3b82f6, #6366f1)', boxShadow: '0 8px 24px rgba(99,102,241,0.4)' }}>
+                    <IconComponent size={22} className="text-white" />
                   </div>
                   <p className="text-white/30 text-xs">{displayDomain()}</p>
                 </div>
@@ -377,14 +338,11 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
           )}
         </div>
 
-        {/* ── Resize handle ── */}
+        {/* Resize handle */}
         {!win.isMaximized && !win.isFullscreen && (
           <div
             onMouseDown={startResize}
-            style={{
-              position: 'absolute', bottom: 0, right: 0,
-              width: 16, height: 16, cursor: 'se-resize',
-            }}
+            style={{ position: 'absolute', bottom: 0, right: 0, width: 18, height: 18, cursor: 'se-resize' }}
           />
         )}
       </motion.div>

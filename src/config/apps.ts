@@ -9,6 +9,8 @@ export const apps: AppConfig[] = [
     category: 'Business',
     defaultSize: { width: 1100, height: 720 },
     permissionKey: 'crescer',
+    gradient: 'linear-gradient(145deg, #3b82f6, #1d4ed8)',
+    accentColor: '#3b82f6',
   },
   {
     id: 'gardenz',
@@ -18,6 +20,8 @@ export const apps: AppConfig[] = [
     category: 'Tools',
     defaultSize: { width: 1100, height: 720 },
     permissionKey: 'gardenz',
+    gradient: 'linear-gradient(145deg, #22c55e, #15803d)',
+    accentColor: '#22c55e',
   },
   {
     id: 'criptoHub',
@@ -27,6 +31,8 @@ export const apps: AppConfig[] = [
     category: 'Crypto',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'criptoHub',
+    gradient: 'linear-gradient(145deg, #f59e0b, #b45309)',
+    accentColor: '#f59e0b',
   },
   {
     id: 'bitrade',
@@ -36,6 +42,8 @@ export const apps: AppConfig[] = [
     category: 'Trading',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'bitrade',
+    gradient: 'linear-gradient(145deg, #8b5cf6, #6d28d9)',
+    accentColor: '#8b5cf6',
   },
   {
     id: 'trade',
@@ -45,6 +53,8 @@ export const apps: AppConfig[] = [
     category: 'Trading',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'trade',
+    gradient: 'linear-gradient(145deg, #a855f7, #7c3aed)',
+    accentColor: '#a855f7',
   },
   {
     id: 'betintel',
@@ -54,6 +64,8 @@ export const apps: AppConfig[] = [
     category: 'Sports',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'betintel',
+    gradient: 'linear-gradient(145deg, #ef4444, #b91c1c)',
+    accentColor: '#ef4444',
   },
   {
     id: 'yield',
@@ -63,15 +75,8 @@ export const apps: AppConfig[] = [
     category: 'DeFi',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'yield',
-  },
-  {
-    id: 'aura',
-    name: 'Aura',
-    url: 'https://aura-full.vercel.app/',
-    icon: 'Sparkles',
-    category: 'Game',
-    defaultSize: { width: 1200, height: 760 },
-    permissionKey: 'aura',
+    gradient: 'linear-gradient(145deg, #06b6d4, #0e7490)',
+    accentColor: '#06b6d4',
   },
 ];
 
@@ -81,11 +86,15 @@ export const internalApps = [
     name: 'Configurações',
     icon: 'Settings',
     defaultSize: { width: 720, height: 540 },
+    gradient: 'linear-gradient(145deg, #64748b, #334155)',
+    accentColor: '#64748b',
   },
   {
     id: 'admin',
     name: 'Painel Admin',
     icon: 'Shield',
     defaultSize: { width: 860, height: 600 },
+    gradient: 'linear-gradient(145deg, #f59e0b, #92400e)',
+    accentColor: '#f59e0b',
   },
 ];

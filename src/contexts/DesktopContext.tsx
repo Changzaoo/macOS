@@ -18,8 +18,6 @@ type DesktopContextType = {
   restoreWindow: (id: string) => void;
   addCustomApp: (app: Omit<CustomApp, 'id' | 'createdAt'>) => void;
   removeCustomApp: (id: string) => void;
-  wallpaper: string;
-  setWallpaper: (w: string) => void;
   animationsEnabled: boolean;
   setAnimationsEnabled: (v: boolean) => void;
 };
@@ -42,7 +40,6 @@ const centerOffset = (count: number) => ({ x: 100 + count * 28, y: 56 + count * 
 export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [windows, setWindows] = useState<WindowState[]>([]);
   const [customApps, setCustomApps] = useState<CustomApp[]>(loadCustomApps);
-  const [wallpaper, setWallpaper] = useState('gradient-1');
   const [animationsEnabled, setAnimationsEnabled] = useState(true);
 
   useEffect(() => {
@@ -230,8 +227,6 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
         restoreWindow,
         addCustomApp,
         removeCustomApp,
-        wallpaper,
-        setWallpaper,
         animationsEnabled,
         setAnimationsEnabled,
       }}

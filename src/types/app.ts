@@ -7,4 +7,6 @@ export type AppConfig = {
   defaultSize: { width: number; height: number };
   permissionKey: keyof import('./user').AppPermissions;
   isInternal?: boolean;
+  gradient?: string;
+  accentColor?: string;
 };
