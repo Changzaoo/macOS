@@ -3,6 +3,7 @@ export type WindowState = {
   appId: string;
   title: string;
   url: string;
+  currentUrl: string;
   icon: string;
   x: number;
   y: number;
@@ -14,4 +15,12 @@ export type WindowState = {
   zIndex: number;
   isLoading: boolean;
   isInternal?: boolean;
+};
+
+export type CustomApp = {
+  id: string;
+  name: string;
+  url: string;
+  icon: string;
+  createdAt: string;
 };
