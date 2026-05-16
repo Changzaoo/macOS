@@ -11,13 +11,17 @@ import { db } from '../config/firebase';
 import type { UserProfile, UserPermissions } from '../types/user';
 import { logAudit } from './authService';
 
+const ERR_NOT_CONFIGURED = 'Firebase não configurado. Verifique as variáveis de ambiente.';
+
 export const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
+  if (!db) return null;
   const snap = await getDoc(doc(db, 'users', uid));
   if (!snap.exists()) return null;
   return snap.data() as UserProfile;
 };
 
 export const getAllUsers = async (): Promise<UserProfile[]> => {
+  if (!db) throw new Error(ERR_NOT_CONFIGURED);
   const q = query(collection(db, 'users'), orderBy('createdAt', 'asc'));
   const snap = await getDocs(q);
   return snap.docs.map((d) => d.data() as UserProfile);
@@ -28,6 +32,7 @@ export const updateUserProfile = async (
   targetUid: string,
   updates: Partial<UserProfile>
 ): Promise<void> => {
+  if (!db) throw new Error(ERR_NOT_CONFIGURED);
   await updateDoc(doc(db, 'users', targetUid), updates as Record<string, unknown>);
   await logAudit('user_updated', actorUid, targetUid, { fields: Object.keys(updates) });
 };
@@ -37,6 +42,7 @@ export const updateUserPermissions = async (
   targetUid: string,
   permissions: UserPermissions
 ): Promise<void> => {
+  if (!db) throw new Error(ERR_NOT_CONFIGURED);
   await updateDoc(doc(db, 'users', targetUid), { permissions });
   await logAudit('permissions_updated', actorUid, targetUid);
 };
@@ -46,6 +52,7 @@ export const toggleUserActive = async (
   targetUid: string,
   active: boolean
 ): Promise<void> => {
+  if (!db) throw new Error(ERR_NOT_CONFIGURED);
   await updateDoc(doc(db, 'users', targetUid), { active });
   await logAudit(active ? 'user_activated' : 'user_deactivated', actorUid, targetUid);
 };

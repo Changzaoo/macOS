@@ -13,9 +13,11 @@ import { auth, db } from '../config/firebase';
 import { defaultPermissionsByRole } from '../types/user';
 import type { UserRole, UserProfile } from '../types/user';
 
+const ERR_NOT_CONFIGURED = 'Firebase não configurado. Verifique as variáveis de ambiente.';
+
 export const checkFirstUserExists = async (): Promise<boolean> => {
-  const configRef = doc(db, 'system', 'config');
-  const snap = await getDoc(configRef);
+  if (!db) return false;
+  const snap = await getDoc(doc(db, 'system', 'config'));
   return snap.exists() && snap.data()?.firstUserCreated === true;
 };
 
@@ -24,6 +26,8 @@ export const createFirstAccount = async (
   password: string,
   displayName: string
 ): Promise<UserProfile> => {
+  if (!auth || !db) throw new Error(ERR_NOT_CONFIGURED);
+
   const email = `${username}@sistema.local`;
   const cred = await createUserWithEmailAndPassword(auth, email, password);
   const uid = cred.user.uid;
@@ -57,6 +61,8 @@ export const loginWithUsername = async (
   username: string,
   password: string
 ): Promise<UserProfile> => {
+  if (!auth || !db) throw new Error(ERR_NOT_CONFIGURED);
+
   const email = `${username}@sistema.local`;
   const cred = await signInWithEmailAndPassword(auth, email, password);
   const uid = cred.user.uid;
@@ -72,6 +78,7 @@ export const loginWithUsername = async (
 };
 
 export const logoutUser = async (uid: string): Promise<void> => {
+  if (!auth) throw new Error(ERR_NOT_CONFIGURED);
   await logAudit('logout', uid);
   await signOut(auth);
 };
@@ -89,6 +96,8 @@ export const createUserByAdmin = async (
     avatarUrl?: string;
   }
 ): Promise<UserProfile> => {
+  if (!auth || !db) throw new Error(ERR_NOT_CONFIGURED);
+
   const email = `${data.username}@sistema.local`;
   const cred = await createUserWithEmailAndPassword(auth, email, data.password);
   const uid = cred.user.uid;
@@ -121,6 +130,7 @@ export const logAudit = async (
   metadata?: Record<string, unknown>
 ) => {
   try {
+    if (!db) return;
     const ref = doc(collection(db, 'auditLogs'));
     await setDoc(ref, {
       action,

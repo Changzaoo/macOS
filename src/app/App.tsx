@@ -3,7 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '../contexts/AuthContext';
 import { AppRouter } from './router';
-import { isFirebaseConfigured } from '../config/firebase';
+import { isFirebaseConfigured, missingFirebaseEnv } from '../config/firebase';
 import '../styles/globals.css';
 
 // ── Error Boundary ──────────────────────────────────────────────────────────
@@ -20,14 +20,17 @@ class ErrorBoundary extends React.Component<
   }
   render() {
     if (this.state.error) {
-      return <CrashScreen message={this.state.error.message} />;
+      return <CrashScreen message={this.state.error.message} missing={[]} />;
     }
     return this.props.children;
   }
 }
 
-// ── Tela de erro de configuração ────────────────────────────────────────────
-const CrashScreen: React.FC<{ message?: string }> = ({ message }) => (
+// ── Tela de configuração incompleta ────────────────────────────────────────
+const CrashScreen: React.FC<{ missing?: string[]; message?: string }> = ({
+  missing = [],
+  message,
+}) => (
   <div
     style={{
       minHeight: '100vh',
@@ -69,32 +72,34 @@ const CrashScreen: React.FC<{ message?: string }> = ({ message }) => (
       <h2 style={{ color: '#fff', margin: '0 0 8px', fontSize: '20px', fontWeight: 600 }}>
         Firebase não configurado
       </h2>
-      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', margin: '0 0 24px', lineHeight: 1.6 }}>
-        As variáveis de ambiente do Firebase não estão definidas. Configure-as no painel da Vercel e
-        faça um novo deploy.
+      <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '14px', margin: '0 0 16px', lineHeight: 1.6 }}>
+        {missing.length === 6
+          ? 'Nenhuma variável de ambiente do Firebase foi encontrada.'
+          : `${missing.length} variável(is) ausente(s). Adicione-as no painel da Vercel e faça um novo deploy.`}
       </p>
-      <div
-        style={{
-          background: 'rgba(0,0,0,0.3)',
-          borderRadius: '12px',
-          padding: '16px',
-          textAlign: 'left',
-          marginBottom: '20px',
-        }}
-      >
-        {[
-          'VITE_FIREBASE_API_KEY',
-          'VITE_FIREBASE_AUTH_DOMAIN',
-          'VITE_FIREBASE_PROJECT_ID',
-          'VITE_FIREBASE_STORAGE_BUCKET',
-          'VITE_FIREBASE_MESSAGING_SENDER_ID',
-          'VITE_FIREBASE_APP_ID',
-        ].map((v) => (
-          <div key={v} style={{ color: 'rgba(96,165,250,0.9)', fontSize: '12px', fontFamily: 'monospace', padding: '2px 0' }}>
-            {v}
-          </div>
-        ))}
-      </div>
+      {missing.length > 0 && (
+        <div
+          style={{
+            background: 'rgba(0,0,0,0.3)',
+            borderRadius: '12px',
+            padding: '16px',
+            textAlign: 'left',
+            marginBottom: '20px',
+          }}
+        >
+          <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '11px', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+            Variáveis ausentes
+          </p>
+          {missing.map((v) => (
+            <div
+              key={v}
+              style={{ color: 'rgba(251,146,60,0.9)', fontSize: '12px', fontFamily: 'monospace', padding: '2px 0' }}
+            >
+              {v}
+            </div>
+          ))}
+        </div>
+      )}
       {message && (
         <p style={{ color: 'rgba(248,113,113,0.8)', fontSize: '12px', fontFamily: 'monospace', margin: 0 }}>
           {message}
@@ -107,7 +112,7 @@ const CrashScreen: React.FC<{ message?: string }> = ({ message }) => (
 // ── App principal ───────────────────────────────────────────────────────────
 const App: React.FC = () => {
   if (!isFirebaseConfigured) {
-    return <CrashScreen />;
+    return <CrashScreen missing={missingFirebaseEnv} />;
   }
 
   return (

@@ -21,6 +21,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
     let unsub: (() => void) | undefined;
     try {
       unsub = onAuthStateChanged(
@@ -38,13 +43,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
           setLoading(false);
         },
-        (error) => {
-          console.error('Firebase auth error:', error.message);
+        (_error) => {
           setLoading(false);
         }
       );
-    } catch (err) {
-      console.error('Firebase init error:', err);
+    } catch {
       setLoading(false);
     }
     return () => unsub?.();
