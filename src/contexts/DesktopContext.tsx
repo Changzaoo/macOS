@@ -64,7 +64,14 @@ const loadWidgetsVisible = () => {
   }
 };
 
-const centerOffset = (count: number) => ({ x: 100 + count * 28, y: 56 + count * 28 });
+const fullWindowState = {
+  x: 0,
+  y: 36,
+  width: 1200,
+  height: 760,
+  isMaximized: true,
+  isFullscreen: false,
+};
 
 const topWindow = (windows: WindowState[]) =>
   windows
@@ -139,7 +146,6 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const internalApp = internalApps.find((a) => a.id === appId);
     if (internalApp) {
-      const pos = centerOffset(windows.length);
       setWindows((prev) => [
         ...prev,
         {
@@ -149,12 +155,8 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
           url: '',
           currentUrl: '',
           icon: internalApp.icon,
-          ...pos,
-          width: internalApp.defaultSize.width,
-          height: internalApp.defaultSize.height,
+          ...fullWindowState,
           isMinimized: false,
-          isMaximized: false,
-          isFullscreen: false,
           zIndex: ++zCounter,
           isLoading: false,
           isInternal: true,
@@ -165,7 +167,6 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const customApp = customApps.find((a) => a.id === appId);
     if (customApp) {
-      const pos = centerOffset(windows.length);
       setWindows((prev) => [
         ...prev,
         {
@@ -176,12 +177,8 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
           currentUrl: customApp.canonicalUrl || customApp.url,
           icon: customApp.icon,
           logoUrl: customApp.logoUrl,
-          ...pos,
-          width: 1200,
-          height: 760,
+          ...fullWindowState,
           isMinimized: false,
-          isMaximized: false,
-          isFullscreen: false,
           zIndex: ++zCounter,
           isLoading: true,
         },
@@ -191,7 +188,6 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     const vercelApp = vercelApps.find((a) => a.id === appId);
     if (vercelApp) {
-      const pos = centerOffset(windows.length);
       setWindows((prev) => [
         ...prev,
         {
@@ -202,12 +198,8 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
           currentUrl: vercelApp.canonicalUrl || vercelApp.url,
           icon: vercelApp.icon,
           logoUrl: vercelApp.logoUrl,
-          ...pos,
-          width: 1200,
-          height: 760,
+          ...fullWindowState,
           isMinimized: false,
-          isMaximized: false,
-          isFullscreen: false,
           zIndex: ++zCounter,
           isLoading: true,
         },
@@ -218,7 +210,6 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
     const appConfig = apps.find((a) => a.id === appId);
     if (!appConfig) return;
 
-    const pos = centerOffset(windows.length);
     setWindows((prev) => [
       ...prev,
       {
@@ -228,12 +219,8 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
         url: appConfig.url,
         currentUrl: appConfig.url,
         icon: appConfig.icon,
-        ...pos,
-        width: appConfig.defaultSize.width,
-        height: appConfig.defaultSize.height,
+        ...fullWindowState,
         isMinimized: false,
-        isMaximized: false,
-        isFullscreen: false,
         zIndex: ++zCounter,
         isLoading: true,
       },
@@ -241,7 +228,6 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [windows, customApps, vercelApps]);
 
   const openUrl = useCallback((url: string, name = 'Web', icon = 'Globe') => {
-    const pos = centerOffset(windows.length);
     setWindows((prev) => [
       ...prev,
       {
@@ -251,17 +237,13 @@ export const DesktopProvider: React.FC<{ children: React.ReactNode }> = ({ child
         url,
         currentUrl: url,
         icon,
-        ...pos,
-        width: 1200,
-        height: 760,
+        ...fullWindowState,
         isMinimized: false,
-        isMaximized: false,
-        isFullscreen: false,
         zIndex: ++zCounter,
         isLoading: true,
       },
     ]);
-  }, [windows]);
+  }, []);
 
   const closeWindow = useCallback((id: string) => {
     setWindows((prev) => prev.filter((w) => w.id !== id));
