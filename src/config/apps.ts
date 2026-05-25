@@ -9,8 +9,8 @@ export const apps: AppConfig[] = [
     category: 'Business',
     defaultSize: { width: 1100, height: 720 },
     permissionKey: 'crescer',
-    gradient: 'linear-gradient(145deg, #3b82f6, #1d4ed8)',
-    accentColor: '#3b82f6',
+    gradient: 'linear-gradient(145deg, #49a8ff, #1f6dff 52%, #8f7cff)',
+    accentColor: '#49a8ff',
   },
   {
     id: 'gardenz',
@@ -20,8 +20,8 @@ export const apps: AppConfig[] = [
     category: 'Tools',
     defaultSize: { width: 1100, height: 720 },
     permissionKey: 'gardenz',
-    gradient: 'linear-gradient(145deg, #22c55e, #15803d)',
-    accentColor: '#22c55e',
+    gradient: 'linear-gradient(145deg, #7df2b7, #10b981 48%, #0891b2)',
+    accentColor: '#10b981',
   },
   {
     id: 'criptoHub',
@@ -31,7 +31,7 @@ export const apps: AppConfig[] = [
     category: 'Crypto',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'criptoHub',
-    gradient: 'linear-gradient(145deg, #f59e0b, #b45309)',
+    gradient: 'linear-gradient(145deg, #ffe071, #f59e0b 48%, #ef5da8)',
     accentColor: '#f59e0b',
   },
   {
@@ -42,7 +42,7 @@ export const apps: AppConfig[] = [
     category: 'Trading',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'bitrade',
-    gradient: 'linear-gradient(145deg, #8b5cf6, #6d28d9)',
+    gradient: 'linear-gradient(145deg, #72d7ff, #8b5cf6 52%, #ef5da8)',
     accentColor: '#8b5cf6',
   },
   {
@@ -53,8 +53,8 @@ export const apps: AppConfig[] = [
     category: 'Trading',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'trade',
-    gradient: 'linear-gradient(145deg, #a855f7, #7c3aed)',
-    accentColor: '#a855f7',
+    gradient: 'linear-gradient(145deg, #7dd3fc, #6366f1 50%, #f472b6)',
+    accentColor: '#6366f1',
   },
   {
     id: 'betintel',
@@ -64,7 +64,7 @@ export const apps: AppConfig[] = [
     category: 'Sports',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'betintel',
-    gradient: 'linear-gradient(145deg, #ef4444, #b91c1c)',
+    gradient: 'linear-gradient(145deg, #ff7a7a, #ef4444 50%, #ffb84d)',
     accentColor: '#ef4444',
   },
   {
@@ -75,7 +75,7 @@ export const apps: AppConfig[] = [
     category: 'DeFi',
     defaultSize: { width: 1200, height: 760 },
     permissionKey: 'yield',
-    gradient: 'linear-gradient(145deg, #06b6d4, #0e7490)',
+    gradient: 'linear-gradient(145deg, #6ee7f9, #06b6d4 48%, #34d399)',
     accentColor: '#06b6d4',
   },
 ];
@@ -83,18 +83,18 @@ export const apps: AppConfig[] = [
 export const internalApps = [
   {
     id: 'settings',
-    name: 'Configurações',
+    name: 'Ajustes',
     icon: 'Settings',
     defaultSize: { width: 720, height: 540 },
-    gradient: 'linear-gradient(145deg, #64748b, #334155)',
-    accentColor: '#64748b',
+    gradient: 'linear-gradient(145deg, #dbeafe, #60a5fa 48%, #64748b)',
+    accentColor: '#60a5fa',
   },
   {
     id: 'admin',
     name: 'Painel Admin',
     icon: 'Shield',
     defaultSize: { width: 860, height: 600 },
-    gradient: 'linear-gradient(145deg, #f59e0b, #92400e)',
+    gradient: 'linear-gradient(145deg, #ffe071, #f59e0b 48%, #ef5da8)',
     accentColor: '#f59e0b',
   },
 ];

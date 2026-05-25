@@ -17,6 +17,7 @@
     overflow: hidden;
     user-select: none;
     font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #07111f;
   }
 
   ::-webkit-scrollbar {
@@ -34,25 +35,29 @@
 
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08)),
+      rgba(18, 22, 34, 0.36);
+    backdrop-filter: blur(30px) saturate(210%);
+    -webkit-backdrop-filter: blur(30px) saturate(210%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
 
   .glass-dark {
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.06)),
+      rgba(12, 15, 25, 0.66);
+    backdrop-filter: blur(30px) saturate(210%);
+    -webkit-backdrop-filter: blur(30px) saturate(210%);
+    border: 1px solid rgba(255, 255, 255, 0.14);
   }
 
   .window-shadow {
-    box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+    box-shadow: 0 30px 80px rgba(3,6,18,0.48), 0 0 0 1px rgba(255,255,255,0.14);
   }
 
   .dock-shadow {
-    box-shadow: 0 10px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+    box-shadow: 0 20px 58px rgba(3,6,18,0.38), inset 0 1px 0 rgba(255,255,255,0.38);
   }
 
   .text-shadow {

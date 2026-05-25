@@ -27,14 +27,14 @@ export const Avatar: React.FC<AvatarProps> = ({ src, name, size = 'md', classNam
       <img
         src={src}
         alt={name}
-        className={`rounded-full object-cover ${sizeMap[size]} ${className}`}
+      className={`rounded-full object-cover ring-1 ring-white/25 ${sizeMap[size]} ${className}`}
       />
     );
   }
 
   return (
     <div
-      className={`rounded-full bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center font-semibold text-white ${sizeMap[size]} ${className}`}
+      className={`rounded-full bg-gradient-to-br from-cyan-300 via-blue-400 to-pink-300 flex items-center justify-center font-semibold text-white ring-1 ring-white/25 shadow-sm ${sizeMap[size]} ${className}`}
     >
       {initials}
     </div>

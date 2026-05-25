@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Lock, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { Eye, EyeOff, Lock, ShieldCheck } from 'lucide-react';
 import { setUserPassword } from '../../services/authService';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -21,7 +21,7 @@ export const PasswordSetupModal: React.FC = () => {
       return;
     }
     if (password !== confirm) {
-      setError('As senhas não coincidem.');
+      setError('As senhas nao coincidem.');
       return;
     }
 
@@ -37,32 +37,25 @@ export const PasswordSetupModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)' }}>
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-md">
       <motion.div
         initial={{ opacity: 0, scale: 0.92, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-        className="w-full max-w-sm"
-        style={{
-          background: 'rgba(22,22,28,0.98)',
-          border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: 24,
-          boxShadow: '0 32px 96px rgba(0,0,0,0.8)',
-        }}
+        className="w-full max-w-sm liquid-glass-panel overflow-hidden"
+        style={{ borderRadius: 24 }}
       >
-        {/* Header */}
         <div className="flex flex-col items-center px-8 pt-8 pb-5 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center mb-4 shadow-lg">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-300 via-blue-400 to-pink-300 flex items-center justify-center mb-4 shadow-lg">
             <ShieldCheck size={26} className="text-white" />
           </div>
           <h2 className="text-white font-bold text-xl">Defina sua senha</h2>
-          <p className="text-white/45 text-sm mt-1 leading-relaxed">
-            Olá, <span className="text-white/70 font-medium">{user?.displayName}</span>!
+          <p className="text-white/50 text-sm mt-1 leading-relaxed">
+            Ola, <span className="text-white/70 font-medium">{user?.displayName}</span>!
             Crie uma senha para proteger seu acesso.
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="px-8 pb-8 flex flex-col gap-3">
           <div className="relative">
             <Lock size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
@@ -70,15 +63,14 @@ export const PasswordSetupModal: React.FC = () => {
               type={showPass ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Nova senha (mín. 6 caracteres)"
+              placeholder="Nova senha (min. 6 caracteres)"
               autoFocus
-              className="w-full pl-9 pr-10 py-3 rounded-xl bg-white/08 border border-white/15 text-white placeholder-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all select-text"
-              style={{ background: 'rgba(255,255,255,0.06)' }}
+              className="w-full pl-9 pr-10 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300/50 transition-all select-text"
             />
             <button
               type="button"
-              onClick={() => setShowPass((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60"
+              onClick={() => setShowPass((value) => !value)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/70"
             >
               {showPass ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
@@ -91,8 +83,7 @@ export const PasswordSetupModal: React.FC = () => {
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               placeholder="Confirmar senha"
-              className="w-full pl-9 pr-4 py-3 rounded-xl text-white placeholder-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all select-text"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 12 }}
+              className="w-full pl-9 pr-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300/50 transition-all select-text"
             />
           </div>
 
@@ -100,7 +91,7 @@ export const PasswordSetupModal: React.FC = () => {
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-red-400 text-xs text-center bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2"
+              className="text-red-300 text-xs text-center bg-red-500/10 border border-red-500/20 rounded-xl px-3 py-2"
             >
               {error}
             </motion.p>
@@ -109,10 +100,9 @@ export const PasswordSetupModal: React.FC = () => {
           <button
             type="submit"
             disabled={loading || !password || !confirm}
-            className="mt-1 w-full py-3 rounded-xl text-white text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            style={{ background: loading ? 'rgba(59,130,246,0.6)' : 'rgba(59,130,246,0.9)' }}
+            className="mt-1 w-full py-3 rounded-xl text-white text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed liquid-button"
           >
-            {loading ? 'Salvando…' : 'Definir senha e entrar'}
+            {loading ? 'Salvando...' : 'Definir senha e entrar'}
           </button>
         </form>
       </motion.div>

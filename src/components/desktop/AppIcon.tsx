@@ -38,13 +38,16 @@ export const AppIcon: React.FC<AppIconProps> = ({
       whileTap={{ scale: 0.93 }}
     >
       <div
+        className="liquid-app-icon"
         style={{
           width: px,
           height: px,
           borderRadius: radius,
-          background: faviconUrl ? 'rgba(255,255,255,0.92)' : bg,
-          border: '1px solid rgba(255,255,255,0.18)',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25)',
+          background: faviconUrl
+            ? 'linear-gradient(145deg, rgba(255,255,255,0.96), rgba(255,255,255,0.78))'
+            : bg,
+          border: '1px solid rgba(255,255,255,0.26)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -59,7 +62,7 @@ export const AppIcon: React.FC<AppIconProps> = ({
             width={faviconSz}
             height={faviconSz}
             onError={() => setFaviconError(true)}
-            style={{ objectFit: 'contain', borderRadius: 6 }}
+            style={{ objectFit: 'contain', borderRadius: 8 }}
           />
         ) : (
           <IconComponent size={iconPx} className="text-white drop-shadow" />

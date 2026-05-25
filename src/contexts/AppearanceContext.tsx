@@ -9,7 +9,7 @@ type AppearanceContextType = AppearanceState & {
 };
 
 const DEFAULTS: AppearanceState = {
-  wallpaperId: 'aurora',
+  wallpaperId: 'tahoe',
   theme: 'dark',
   blurEnabled: true,
   transparencyEnabled: true,

@@ -48,6 +48,7 @@ const DockIcon: React.FC<{
 
   return (
     <motion.div
+      className="liquid-app-icon"
       onClick={onClick}
       onContextMenu={onContextMenu}
       style={{
@@ -58,16 +59,19 @@ const DockIcon: React.FC<{
         transformOrigin: 'bottom center',
         cursor: 'pointer',
         borderRadius: 15,
-        background: faviconUrl ? 'rgba(255,255,255,0.93)' : bg,
-        border: '1px solid rgba(255,255,255,0.18)',
+        background: faviconUrl
+          ? 'linear-gradient(145deg, rgba(255,255,255,0.96), rgba(255,255,255,0.78))'
+          : bg,
+        border: '1px solid rgba(255,255,255,0.26)',
         boxShadow: isOpen
-          ? '0 0 0 2px rgba(99,179,237,0.5), 0 6px 24px rgba(0,0,0,0.4)'
-          : '0 4px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.2)',
+          ? '0 0 0 2px rgba(255,255,255,0.38), 0 10px 30px rgba(59,130,246,0.34), 0 8px 26px rgba(0,0,0,0.34)'
+          : '0 8px 24px rgba(0,0,0,0.3)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         overflow: 'hidden',
         flexShrink: 0,
+        position: 'relative',
       }}
       whileTap={{ scale: scale * 0.92 }}
     >
@@ -78,7 +82,7 @@ const DockIcon: React.FC<{
           width={38}
           height={38}
           onError={() => setFaviconError(true)}
-          style={{ objectFit: 'contain', borderRadius: 6 }}
+          style={{ objectFit: 'contain', borderRadius: 8 }}
         />
       ) : (
         <IconComponent size={27} className="text-white drop-shadow" />
@@ -92,6 +96,7 @@ export const Dock: React.FC = () => {
   const { canOpenApp } = usePermissions();
   const dockRef = useRef<HTMLDivElement>(null);
   const [mouseX, setMouseX] = useState<number | null>(null);
+  const [dockLeft, setDockLeft] = useState(0);
   const [showAddModal, setShowAddModal] = useState(false);
   const [rightClickApp, setRightClickApp] = useState<string | null>(null);
 
@@ -102,7 +107,10 @@ export const Dock: React.FC = () => {
     ...customApps.map((a) => ({ id: a.id, name: a.name, icon: a.icon, url: a.url, isCustom: true })),
   ];
 
-  const handleMouseMove = (e: React.MouseEvent) => setMouseX(e.clientX);
+  const handleMouseMove = (e: React.MouseEvent) => {
+    setMouseX(e.clientX);
+    setDockLeft(dockRef.current?.getBoundingClientRect().left ?? 0);
+  };
   const handleMouseLeave = () => { setMouseX(null); setRightClickApp(null); };
 
   return (
@@ -116,10 +124,9 @@ export const Dock: React.FC = () => {
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           className="dock-glass flex items-end px-3 py-2.5 relative"
-          style={{ borderRadius: 22, gap: GAP }}
+          style={{ borderRadius: 26, gap: GAP }}
         >
           {allItems.map((item, index) => {
-            const dockLeft = dockRef.current?.getBoundingClientRect().left ?? 0;
             const { scale, y } = getMagnified(mouseX, index, dockLeft);
             const isOpen = windows.some((w) => w.appId === item.id && !w.isMinimized);
             const isMinimized = windows.some((w) => w.appId === item.id && w.isMinimized);
@@ -136,11 +143,11 @@ export const Dock: React.FC = () => {
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.88 }}
                       className="absolute popup-glass"
-                      style={{ bottom: ICON_SIZE + 14, left: '50%', transform: 'translateX(-50%)', borderRadius: 10, padding: 4, zIndex: 200, whiteSpace: 'nowrap' }}
+                      style={{ bottom: ICON_SIZE + 14, left: '50%', transform: 'translateX(-50%)', borderRadius: 14, padding: 4, zIndex: 200, whiteSpace: 'nowrap' }}
                     >
                       <button
                         onClick={() => { removeCustomApp(item.id); setRightClickApp(null); }}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-red-400 hover:bg-red-500/10 text-xs transition-colors"
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-red-300 hover:bg-red-500/10 text-xs transition-colors"
                       >
                         <Trash2 size={12} />
                         Remover
@@ -161,7 +168,7 @@ export const Dock: React.FC = () => {
                         bottom: ICON_SIZE * scale + 14,
                         left: '50%',
                         transform: 'translateX(-50%)',
-                        borderRadius: 8,
+                        borderRadius: 999,
                         padding: '3px 9px',
                         fontSize: 11,
                         color: 'rgba(255,255,255,0.88)',
@@ -186,7 +193,7 @@ export const Dock: React.FC = () => {
 
                 {/* Indicator dot */}
                 <div style={{
-                  width: 4, height: 4, borderRadius: '50%', marginTop: 3, flexShrink: 0,
+                  width: 4, height: 4, borderRadius: '50%', marginTop: 4, flexShrink: 0,
                   background: isOpen
                     ? 'rgba(255,255,255,0.85)'
                     : isMinimized
@@ -200,7 +207,7 @@ export const Dock: React.FC = () => {
 
           {/* Separator */}
           {allItems.length > 0 && (
-            <div style={{ width: 1, height: ICON_SIZE * 0.55, background: 'rgba(255,255,255,0.15)', alignSelf: 'center', flexShrink: 0, marginInline: 2 }} />
+            <div style={{ width: 1, height: ICON_SIZE * 0.55, background: 'rgba(255,255,255,0.22)', alignSelf: 'center', flexShrink: 0, marginInline: 4 }} />
           )}
 
           {/* Add button */}
@@ -212,10 +219,10 @@ export const Dock: React.FC = () => {
               style={{
                 width: ICON_SIZE,
                 height: ICON_SIZE,
-                borderRadius: 15,
-                background: 'rgba(255,255,255,0.06)',
-                border: '1.5px dashed rgba(255,255,255,0.22)',
-                color: 'rgba(255,255,255,0.4)',
+                borderRadius: 16,
+                background: 'rgba(255,255,255,0.14)',
+                border: '1.5px dashed rgba(255,255,255,0.34)',
+                color: 'rgba(255,255,255,0.68)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -224,12 +231,12 @@ export const Dock: React.FC = () => {
                 flexShrink: 0,
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.12)';
-                (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.85)';
+                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.22)';
+                (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.92)';
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.06)';
-                (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.4)';
+                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.14)';
+                (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.68)';
               }}
             >
               <Plus size={22} />

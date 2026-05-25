@@ -22,12 +22,12 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   type = 'button',
 }) => {
-  const base = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent';
+  const base = 'inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent shadow-sm';
 
   const variants = {
-    primary: 'bg-blue-500 hover:bg-blue-400 text-white focus:ring-blue-500',
+    primary: 'liquid-button text-white focus:ring-sky-300/50',
     secondary: 'bg-white/10 hover:bg-white/20 text-white border border-white/20 focus:ring-white/30',
-    danger: 'bg-red-500 hover:bg-red-400 text-white focus:ring-red-500',
+    danger: 'bg-red-500/90 hover:bg-red-400 text-white focus:ring-red-500',
     ghost: 'hover:bg-white/10 text-white/70 hover:text-white focus:ring-white/20',
   };
 

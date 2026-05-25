@@ -2,62 +2,62 @@ import type { Wallpaper } from '../types/appearance';
 
 export const WALLPAPERS: Wallpaper[] = [
   {
-    id: 'aurora',
-    label: 'Aurora Azul',
-    preview: ['#1a1a6e', '#3b0764', '#0c4a6e'],
+    id: 'tahoe',
+    label: 'Tahoe Glass',
+    preview: ['#74e0ff', '#f9a8d4', '#facc15'],
     gradient:
-      'radial-gradient(ellipse at 20% 50%, #1a1a6e 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, #3b0764 0%, transparent 55%), radial-gradient(ellipse at 60% 80%, #0c4a6e 0%, transparent 50%), linear-gradient(160deg, #0f0f1a 0%, #1a0a2e 40%, #0a1628 100%)',
+      'linear-gradient(132deg, rgba(255,255,255,0.34) 0%, transparent 18% 72%, rgba(255,255,255,0.18) 100%), conic-gradient(from 214deg at 52% 46%, #37d5f5, #8b7cf6, #f28ac8, #f6c85f, #6ee7b7, #37d5f5), linear-gradient(145deg, #10223f 0%, #1f2a44 48%, #0d1629 100%)',
+  },
+  {
+    id: 'aurora',
+    label: 'Aurora',
+    preview: ['#38bdf8', '#a78bfa', '#2dd4bf'],
+    gradient:
+      'linear-gradient(118deg, rgba(56,189,248,0.56), transparent 34%), linear-gradient(206deg, rgba(167,139,250,0.5), transparent 42%), linear-gradient(20deg, rgba(45,212,191,0.38), transparent 54%), linear-gradient(145deg, #08111f 0%, #172033 48%, #07131d 100%)',
   },
   {
     id: 'sonoma',
     label: 'Sonoma',
-    preview: ['#7c2d12', '#9a3412', '#1e1b4b'],
+    preview: ['#fb7185', '#f59e0b', '#38bdf8'],
     gradient:
-      'radial-gradient(ellipse at 60% 20%, #c2410c 0%, transparent 55%), radial-gradient(ellipse at 20% 80%, #7c3aed 0%, transparent 60%), radial-gradient(ellipse at 90% 90%, #1e3a5f 0%, transparent 50%), linear-gradient(150deg, #1c1917 0%, #292524 50%, #1e1b4b 100%)',
+      'linear-gradient(124deg, rgba(251,113,133,0.66), transparent 36%), linear-gradient(236deg, rgba(245,158,11,0.46), transparent 48%), linear-gradient(18deg, rgba(56,189,248,0.42), transparent 58%), linear-gradient(145deg, #1b1720 0%, #2a2132 50%, #101827 100%)',
   },
   {
     id: 'cosmica',
-    label: 'Noite Cósmica',
-    preview: ['#0f0c29', '#302b63', '#24243e'],
+    label: 'Cosmica',
+    preview: ['#818cf8', '#22d3ee', '#f472b6'],
     gradient:
-      'radial-gradient(ellipse at 30% 70%, #1e1b4b 0%, transparent 60%), radial-gradient(ellipse at 70% 30%, #312e81 0%, transparent 55%), radial-gradient(ellipse at 50% 50%, #4c1d95 0%, transparent 40%), linear-gradient(135deg, #0f0c29 0%, #1e1b4b 100%)',
+      'conic-gradient(from 140deg at 48% 44%, #111827, #3730a3, #22d3ee, #f472b6, #111827), linear-gradient(155deg, rgba(255,255,255,0.14), transparent 38% 72%, rgba(255,255,255,0.1))',
   },
   {
     id: 'vidro',
-    label: 'Vidro Líquido',
-    preview: ['#0f172a', '#1e3a5f', '#0c4a6e'],
+    label: 'Vidro Liquido',
+    preview: ['#dbeafe', '#60a5fa', '#14b8a6'],
     gradient:
-      'radial-gradient(ellipse at 50% 50%, #164e63 0%, transparent 70%), radial-gradient(ellipse at 80% 80%, #0f2027 0%, transparent 50%), linear-gradient(135deg, #0c1445 0%, #164e63 50%, #0f2027 100%)',
+      'linear-gradient(116deg, rgba(219,234,254,0.58), transparent 27%), linear-gradient(230deg, rgba(96,165,250,0.54), transparent 42%), linear-gradient(18deg, rgba(20,184,166,0.42), transparent 62%), linear-gradient(145deg, #071421 0%, #14324a 48%, #06151b 100%)',
   },
   {
-    id: 'oceano',
-    label: 'Mar Profundo',
-    preview: ['#0c4a6e', '#065f46', '#1e3a8a'],
+    id: 'graphite',
+    label: 'Graphite',
+    preview: ['#e5e7eb', '#64748b', '#38bdf8'],
     gradient:
-      'radial-gradient(ellipse at 30% 30%, #0c4a6e 0%, transparent 60%), radial-gradient(ellipse at 80% 70%, #065f46 0%, transparent 55%), linear-gradient(160deg, #020617 0%, #0c2340 50%, #042f1d 100%)',
+      'linear-gradient(130deg, rgba(255,255,255,0.38), transparent 22% 76%, rgba(125,211,252,0.22)), conic-gradient(from 222deg at 48% 52%, #111827, #334155, #e5e7eb, #38bdf8, #111827)',
   },
   {
-    id: 'silver',
-    label: 'Minimal Silver',
-    preview: ['#1e293b', '#334155', '#475569'],
+    id: 'garden',
+    label: 'Garden',
+    preview: ['#86efac', '#22d3ee', '#fef08a'],
     gradient:
-      'radial-gradient(ellipse at 40% 40%, #334155 0%, transparent 60%), radial-gradient(ellipse at 70% 80%, #1e293b 0%, transparent 55%), linear-gradient(145deg, #0f172a 0%, #1e293b 60%, #334155 100%)',
+      'linear-gradient(124deg, rgba(134,239,172,0.55), transparent 33%), linear-gradient(232deg, rgba(34,211,238,0.42), transparent 45%), linear-gradient(18deg, rgba(254,240,138,0.34), transparent 62%), linear-gradient(145deg, #071712 0%, #123528 50%, #07111e 100%)',
   },
   {
-    id: 'sunset',
-    label: 'Sunset Pro',
-    preview: ['#7f1d1d', '#dc2626', '#9333ea'],
+    id: 'sunrise',
+    label: 'Sunrise',
+    preview: ['#fda4af', '#fbbf24', '#93c5fd'],
     gradient:
-      'radial-gradient(ellipse at 40% 60%, #7c3aed 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, #db2777 0%, transparent 50%), radial-gradient(ellipse at 20% 80%, #dc2626 0%, transparent 50%), linear-gradient(135deg, #1a0533 0%, #2d1b69 100%)',
-  },
-  {
-    id: 'forest',
-    label: 'Forest Dark',
-    preview: ['#052e16', '#166534', '#14532d'],
-    gradient:
-      'radial-gradient(ellipse at 30% 40%, #14532d 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, #052e16 0%, transparent 55%), radial-gradient(ellipse at 60% 20%, #065f46 0%, transparent 45%), linear-gradient(135deg, #020c08 0%, #052e16 50%, #166534 100%)',
+      'linear-gradient(122deg, rgba(253,164,175,0.58), transparent 33%), linear-gradient(235deg, rgba(251,191,36,0.48), transparent 49%), linear-gradient(18deg, rgba(147,197,253,0.42), transparent 62%), linear-gradient(145deg, #221520 0%, #352033 48%, #122033 100%)',
   },
 ];
 
 export const getWallpaperById = (id: string): Wallpaper =>
-  WALLPAPERS.find((w) => w.id === id) ?? WALLPAPERS[0];
+  WALLPAPERS.find((wallpaper) => wallpaper.id === id) ?? WALLPAPERS[0];

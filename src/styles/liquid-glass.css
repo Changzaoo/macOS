@@ -1,121 +1,345 @@
-/* ── Liquid Glass Design System ─────────────────────────────────────────── */
+/* Liquid Glass inspired system */
 
-.liquid-glass {
-  background: rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+:root {
+  --liquid-blur: 34px;
+  --liquid-saturation: 210%;
+  --liquid-line: rgba(255, 255, 255, 0.34);
+  --liquid-line-soft: rgba(255, 255, 255, 0.16);
+  --liquid-shadow: 0 28px 90px rgba(5, 8, 18, 0.42);
+  --liquid-inset: inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    inset 0 -1px 0 rgba(14, 18, 31, 0.16);
 }
 
-.liquid-glass-dark {
-  background: rgba(0, 0, 0, 0.35);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+.desktop-shell {
+  isolation: isolate;
+  color: #fff;
+}
+
+.desktop-shell::before,
+.desktop-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.desktop-shell::before {
+  inset: -16%;
+  background:
+    linear-gradient(112deg, rgba(255, 255, 255, 0.34) 0 8%, transparent 25%),
+    conic-gradient(
+      from 218deg at 46% 48%,
+      rgba(92, 225, 230, 0.32),
+      rgba(246, 148, 196, 0.26),
+      rgba(255, 208, 112, 0.2),
+      rgba(119, 247, 191, 0.24),
+      rgba(92, 225, 230, 0.32)
+    );
+  filter: blur(36px) saturate(145%);
+  opacity: 0.56;
+  transform: rotate(-7deg) scale(1.05);
+  mix-blend-mode: screen;
+}
+
+.desktop-shell::after {
+  inset: 0;
+  background:
+    linear-gradient(126deg, transparent 0 28%, rgba(255, 255, 255, 0.2) 39%, transparent 52%),
+    linear-gradient(16deg, rgba(255, 255, 255, 0.11), transparent 34% 72%, rgba(255, 255, 255, 0.08));
+  opacity: 0.42;
+}
+
+.desktop-layer {
+  position: relative;
+  z-index: 1;
+}
+
+.liquid-glass,
+.liquid-glass-dark,
+.liquid-glass-panel,
+.liquid-surface {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08)),
+    rgba(21, 24, 36, 0.42);
+  backdrop-filter: blur(var(--liquid-blur)) saturate(var(--liquid-saturation));
+  -webkit-backdrop-filter: blur(var(--liquid-blur)) saturate(var(--liquid-saturation));
+  border: 1px solid var(--liquid-line-soft);
+  box-shadow: var(--liquid-shadow), var(--liquid-inset);
 }
 
 .liquid-glass-panel {
-  background: rgba(15, 15, 20, 0.75);
-  backdrop-filter: blur(40px) saturate(200%);
-  -webkit-backdrop-filter: blur(40px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    0 32px 96px rgba(0, 0, 0, 0.65),
-    0 0 0 0.5px rgba(255, 255, 255, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.07)),
+    rgba(13, 16, 26, 0.76);
 }
 
 .liquid-button {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08)),
+    rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px) saturate(190%);
+  -webkit-backdrop-filter: blur(18px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
-  transition: all 0.15s ease;
+    0 8px 24px rgba(5, 8, 18, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  transition: transform 0.16s ease, background 0.16s ease, border-color 0.16s ease;
 }
 
 .liquid-button:hover {
-  background: rgba(255, 255, 255, 0.14);
-  border-color: rgba(255, 255, 255, 0.22);
-  box-shadow:
-    0 4px 16px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.11)),
+    rgba(255, 255, 255, 0.13);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .liquid-button:active {
-  background: rgba(255, 255, 255, 0.06);
   transform: scale(0.97);
 }
 
-/* Window chrome glass */
-.window-chrome {
-  background: rgba(20, 20, 28, 0.96);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-/* Topbar glass */
 .topbar-glass {
-  background: rgba(0, 0, 0, 0.50);
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.1)),
+    rgba(12, 14, 24, 0.26);
+  backdrop-filter: blur(30px) saturate(220%) brightness(1.08);
+  -webkit-backdrop-filter: blur(30px) saturate(220%) brightness(1.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 1px 24px rgba(3, 6, 18, 0.18);
 }
 
-/* Dock glass */
-.dock-glass {
+.menu-pill,
+.status-pill {
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(48px) saturate(200%);
-  -webkit-backdrop-filter: blur(48px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.20);
-  box-shadow:
-    0 12px 48px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-/* Context menu / popup glass */
+.dock-glass {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.44), rgba(255, 255, 255, 0.16)),
+    rgba(19, 23, 34, 0.28);
+  backdrop-filter: blur(48px) saturate(230%) brightness(1.06);
+  -webkit-backdrop-filter: blur(48px) saturate(230%) brightness(1.06);
+  border: 1px solid rgba(255, 255, 255, 0.34);
+  box-shadow:
+    0 24px 68px rgba(3, 6, 18, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.62),
+    inset 0 -1px 0 rgba(11, 16, 28, 0.18);
+}
+
+.dock-glass::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background:
+    linear-gradient(100deg, rgba(255, 255, 255, 0.46), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 58%);
+  opacity: 0.82;
+  pointer-events: none;
+}
+
+.liquid-app-icon {
+  position: relative;
+  isolation: isolate;
+}
+
+.liquid-app-icon::before,
+.liquid-app-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.liquid-app-icon::before {
+  z-index: 1;
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.62), transparent 31%),
+    radial-gradient(120% 95% at 80% 100%, rgba(255, 255, 255, 0.22), transparent 56%);
+  mix-blend-mode: screen;
+  opacity: 0.68;
+}
+
+.liquid-app-icon::after {
+  z-index: 2;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.52),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.16);
+}
+
+.liquid-app-icon > img,
+.liquid-app-icon > svg {
+  position: relative;
+  z-index: 3;
+}
+
+.window-chrome {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.08)),
+    rgba(18, 21, 32, 0.56);
+  backdrop-filter: blur(36px) saturate(220%);
+  -webkit-backdrop-filter: blur(36px) saturate(220%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26);
+}
+
+.window-shell {
+  background: rgba(10, 13, 22, 0.5);
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.url-field-glass {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(16px) saturate(190%);
+  -webkit-backdrop-filter: blur(16px) saturate(190%);
+}
+
 .popup-glass {
-  background: rgba(26, 26, 34, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)),
+    rgba(18, 20, 30, 0.72);
+  backdrop-filter: blur(30px) saturate(220%);
+  -webkit-backdrop-filter: blur(30px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    0 22px 62px rgba(4, 7, 18, 0.46),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
 }
 
-/* Icon gradient backgrounds per category */
-.icon-bg-business  { background: linear-gradient(145deg, #3b82f6, #1d4ed8); }
-.icon-bg-tools     { background: linear-gradient(145deg, #22c55e, #15803d); }
-.icon-bg-crypto    { background: linear-gradient(145deg, #f59e0b, #b45309); }
-.icon-bg-trading   { background: linear-gradient(145deg, #8b5cf6, #6d28d9); }
-.icon-bg-sports    { background: linear-gradient(145deg, #ef4444, #b91c1c); }
-.icon-bg-defi      { background: linear-gradient(145deg, #06b6d4, #0e7490); }
-.icon-bg-game      { background: linear-gradient(145deg, #ec4899, #9d174d); }
-.icon-bg-default   { background: linear-gradient(145deg, #64748b, #334155); }
+.desktop-widgets {
+  position: absolute;
+  top: 64px;
+  left: 22px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(112px, 1fr));
+  gap: 10px;
+  width: min(286px, calc(100vw - 44px));
+  z-index: 5;
+  pointer-events: none;
+}
 
-/* Wallpaper smooth transitions */
+.liquid-widget {
+  min-height: 92px;
+  border-radius: 24px;
+  padding: 13px 14px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.09)),
+    rgba(18, 22, 34, 0.32);
+  backdrop-filter: blur(34px) saturate(220%);
+  -webkit-backdrop-filter: blur(34px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 18px 48px rgba(3, 7, 18, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+.liquid-widget.wide {
+  grid-column: span 2;
+  min-height: 78px;
+}
+
+.widget-label {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.widget-value {
+  color: rgba(255, 255, 255, 0.94);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.settings-shell {
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
+    rgba(9, 12, 21, 0.96);
+}
+
+.settings-sidebar {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(26px) saturate(190%);
+  -webkit-backdrop-filter: blur(26px) saturate(190%);
+}
+
+.settings-card {
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  background-size: 128px;
+  opacity: 0.035;
+  pointer-events: none;
+}
+
 .wallpaper-transition {
   transition: background 0.8s ease;
 }
 
-/* Noise texture overlay */
-.noise-overlay {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  background-size: 128px;
-  opacity: 0.03;
-  pointer-events: none;
+[data-transparency="off"] .topbar-glass,
+[data-transparency="off"] .dock-glass,
+[data-transparency="off"] .window-chrome,
+[data-transparency="off"] .popup-glass,
+[data-transparency="off"] .liquid-widget,
+[data-transparency="off"] .liquid-glass,
+[data-transparency="off"] .liquid-glass-panel {
+  background: rgba(19, 23, 34, 0.94);
 }
+
+[data-blur="off"] .topbar-glass,
+[data-blur="off"] .dock-glass,
+[data-blur="off"] .window-chrome,
+[data-blur="off"] .popup-glass,
+[data-blur="off"] .liquid-widget,
+[data-blur="off"] .liquid-glass,
+[data-blur="off"] .liquid-glass-panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+@media (max-width: 760px) {
+  .desktop-widgets {
+    top: 54px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .liquid-widget {
+    min-height: 74px;
+    border-radius: 20px;
+    padding: 11px 12px;
+  }
+}
+
+/* Icon gradient backgrounds per category */
+.icon-bg-business { background: linear-gradient(145deg, #49a8ff, #1f6dff 52%, #8f7cff); }
+.icon-bg-tools { background: linear-gradient(145deg, #7df2b7, #10b981 48%, #0891b2); }
+.icon-bg-crypto { background: linear-gradient(145deg, #ffe071, #f59e0b 48%, #ef5da8); }
+.icon-bg-trading { background: linear-gradient(145deg, #72d7ff, #8b5cf6 52%, #ef5da8); }
+.icon-bg-sports { background: linear-gradient(145deg, #ff7a7a, #ef4444 50%, #ffb84d); }
+.icon-bg-defi { background: linear-gradient(145deg, #6ee7f9, #06b6d4 48%, #34d399); }
+.icon-bg-game { background: linear-gradient(145deg, #ff8bd1, #ec4899 48%, #8b5cf6); }
+.icon-bg-default { background: linear-gradient(145deg, #dbeafe, #60a5fa 48%, #64748b); }

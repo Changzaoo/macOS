@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plus, Search, Shield } from 'lucide-react';
 import { getAllUsers } from '../../services/userService';
 import { useAuth } from '../../contexts/AuthContext';
@@ -28,12 +28,23 @@ export const AdminPanel: React.FC = () => {
   };
 
   useEffect(() => {
-    loadUsers();
+    let mounted = true;
+    getAllUsers()
+      .then((all) => {
+        if (mounted) setUsers(all);
+      })
+      .finally(() => {
+        if (mounted) setLoading(false);
+      });
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   if (!isAdmin) {
     return (
-      <div className="flex items-center justify-center h-full text-white/50 flex-col gap-3">
+      <div className="settings-shell flex items-center justify-center h-full text-white/50 flex-col gap-3">
         <Shield size={40} className="opacity-30" />
         <p>Acesso restrito a administradores.</p>
       </div>
@@ -41,20 +52,20 @@ export const AdminPanel: React.FC = () => {
   }
 
   const filtered = users.filter(
-    (u) =>
-      u.username.toLowerCase().includes(search.toLowerCase()) ||
-      u.displayName.toLowerCase().includes(search.toLowerCase())
+    (item) =>
+      item.username.toLowerCase().includes(search.toLowerCase()) ||
+      item.displayName.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
-    <div className="h-full flex flex-col bg-gray-900/95 text-white overflow-hidden">
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0">
+    <div className="settings-shell h-full flex flex-col text-white overflow-hidden">
+      <div className="settings-sidebar flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0">
         <div className="flex items-center gap-3">
-          <Shield size={20} className="text-blue-400" />
-          <h1 className="font-semibold text-lg">Painel Administrativo</h1>
+          <Shield size={20} className="text-sky-200" />
+          <h1 className="font-semibold text-lg">Painel Admin</h1>
         </div>
         <Button onClick={() => { setEditTarget(null); setShowForm(true); }} size="sm">
-          <Plus size={14} className="mr-1" /> Novo Usuário
+          <Plus size={14} className="mr-1" /> Novo usuario
         </Button>
       </div>
 
@@ -65,8 +76,8 @@ export const AdminPanel: React.FC = () => {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar usuários..."
-            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-blue-500/50 text-sm select-text"
+            placeholder="Buscar usuarios..."
+            className="w-full pl-9 pr-4 py-2 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/30 focus:outline-none focus:ring-1 focus:ring-sky-300/50 text-sm select-text"
           />
         </div>
       </div>
@@ -74,13 +85,13 @@ export const AdminPanel: React.FC = () => {
       <div className="flex-1 overflow-y-auto px-6 py-4">
         {loading ? (
           <div className="flex items-center justify-center h-40">
-            <div className="animate-spin w-6 h-6 border-2 border-blue-400 border-t-transparent rounded-full" />
+            <div className="animate-spin w-6 h-6 border-2 border-sky-300 border-t-transparent rounded-full" />
           </div>
         ) : (
           <UserList
             users={filtered}
             currentUser={user!}
-            onEdit={(u) => { setEditTarget(u); setShowForm(true); }}
+            onEdit={(item) => { setEditTarget(item); setShowForm(true); }}
             onRefresh={loadUsers}
           />
         )}
