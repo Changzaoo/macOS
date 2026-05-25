@@ -34,6 +34,7 @@ type DockItem = {
   source: 'builtin' | 'custom' | 'vercel';
   vercelProjectUrl?: string;
   gitRepo?: string;
+  fallbackUrl?: string;
 };
 
 function hostOf(url?: string) {
@@ -135,13 +136,14 @@ export const Dock: React.FC = () => {
       id: app.id,
       name: app.name,
       icon: app.icon,
-      url: match?.url ?? app.url,
+      url: match?.canonicalUrl || match?.url || app.url,
       logoUrl: match?.logoUrl,
       gradient: app.gradient,
       isCustom: false,
       source: match ? 'vercel' : 'builtin',
       vercelProjectUrl: match?.vercelProjectUrl,
       gitRepo: match?.gitRepo,
+      fallbackUrl: match?.fallbackUrl,
     };
   });
 
@@ -152,6 +154,7 @@ export const Dock: React.FC = () => {
       name: app.name,
       icon: app.icon,
       url: app.url,
+      fallbackUrl: app.fallbackUrl,
       logoUrl: app.logoUrl,
       gradient: app.gradient,
       isCustom: false,
@@ -168,6 +171,7 @@ export const Dock: React.FC = () => {
       name: app.name,
       icon: app.icon,
       url: app.url,
+      fallbackUrl: app.fallbackUrl,
       logoUrl: app.logoUrl,
       gradient: app.gradient,
       isCustom: true,

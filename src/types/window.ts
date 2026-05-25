@@ -22,6 +22,8 @@ export type CustomApp = {
   id: string;
   name: string;
   url: string;
+  canonicalUrl?: string;
+  fallbackUrl?: string;
   icon: string;
   logoUrl?: string;
   gradient?: string;

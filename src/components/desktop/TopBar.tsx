@@ -61,6 +61,7 @@ type LaunchItem = {
   name: string;
   icon: string;
   url?: string;
+  fallbackUrl?: string;
   logoUrl?: string;
   source: 'builtin' | 'vercel' | 'custom';
 };
@@ -177,7 +178,8 @@ export const TopBar: React.FC = () => {
         id: app.id,
         name: app.name,
         icon: app.icon,
-        url: match?.url ?? app.url,
+        url: match?.canonicalUrl || match?.url || app.url,
+        fallbackUrl: match?.fallbackUrl,
         logoUrl: match?.logoUrl,
         source: match ? 'vercel' as const : 'builtin' as const,
       };
@@ -192,6 +194,7 @@ export const TopBar: React.FC = () => {
           name: app.name,
           icon: app.icon,
           url: app.url,
+          fallbackUrl: app.fallbackUrl,
           logoUrl: app.logoUrl,
           source: 'vercel' as const,
         })),
@@ -200,6 +203,7 @@ export const TopBar: React.FC = () => {
         name: app.name,
         icon: app.icon,
         url: app.url,
+        fallbackUrl: app.fallbackUrl,
         logoUrl: app.logoUrl,
         source: 'custom' as const,
       })),

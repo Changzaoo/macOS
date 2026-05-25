@@ -4,6 +4,8 @@ export type VercelDockApp = {
   slug: string;
   name: string;
   url: string;
+  canonicalUrl?: string;
+  fallbackUrl?: string;
   logoUrl?: string;
   icon: string;
   gradient?: string;
