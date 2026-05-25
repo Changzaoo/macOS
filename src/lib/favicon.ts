@@ -1,7 +1,8 @@
 export const getFaviconUrl = (siteUrl: string, size = 128): string => {
   try {
-    const domain = new URL(siteUrl).hostname;
-    return `https://www.google.com/s2/favicons?domain=${domain}&sz=${size}`;
+    const url = new URL(siteUrl);
+    const params = new URLSearchParams({ url: url.href, size: String(size) });
+    return `/api/vercel/logo?${params.toString()}`;
   } catch {
     return '';
   }

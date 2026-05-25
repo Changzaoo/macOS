@@ -69,36 +69,6 @@ function normalizeUrl(value) {
   }
 }
 
-function parseAttrs(tag) {
-  const attrs = {};
-  const attrPattern = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*["']([^"']*)["']/g;
-  let match = attrPattern.exec(tag);
-  while (match) {
-    attrs[match[1].toLowerCase()] = match[2];
-    match = attrPattern.exec(tag);
-  }
-  return attrs;
-}
-
-function iconScore(icon) {
-  const rel = icon.rel ?? '';
-  const sizes = icon.sizes ?? '';
-  const size = sizes
-    .split(/\s+/)
-    .map((item) => Number(item.split('x')[0]))
-    .filter(Number.isFinite)
-    .sort((a, b) => b - a)[0] ?? 0;
-  return size + (rel.includes('apple-touch-icon') ? 320 : 0) + (icon.href?.endsWith('.svg') ? 120 : 0);
-}
-
-function absoluteUrl(href, baseUrl) {
-  try {
-    return new URL(href, baseUrl).href;
-  } catch {
-    return '';
-  }
-}
-
 async function fetchWithTimeout(url, options = {}, timeout = 5000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
@@ -109,54 +79,8 @@ async function fetchWithTimeout(url, options = {}, timeout = 5000) {
   }
 }
 
-async function resolveManifestIcon(manifestUrl, baseUrl) {
-  try {
-    const response = await fetchWithTimeout(manifestUrl, { headers: { Accept: 'application/manifest+json, application/json' } }, 3500);
-    if (!response.ok) return '';
-    const manifest = await response.json();
-    const icons = Array.isArray(manifest.icons) ? manifest.icons : [];
-    const icon = icons
-      .filter((item) => item?.src)
-      .map((item) => ({ href: item.src, sizes: item.sizes ?? '', rel: 'manifest' }))
-      .sort((a, b) => iconScore(b) - iconScore(a))[0];
-    return icon ? absoluteUrl(icon.href, baseUrl) : '';
-  } catch {
-    return '';
-  }
-}
-
-async function resolveLogoUrl(siteUrl) {
-  try {
-    const response = await fetchWithTimeout(siteUrl, {
-      headers: {
-        Accept: 'text/html,application/xhtml+xml',
-        'User-Agent': 'macOS-dock-vercel-sync/1.0',
-      },
-    }, 4500);
-    if (!response.ok) throw new Error(`Unable to fetch ${siteUrl}`);
-    const html = await response.text();
-    const tags = html.match(/<link\s+[^>]*>/gi) ?? [];
-    const links = tags.map(parseAttrs);
-    const manifestHref = links.find((attrs) => attrs.rel?.toLowerCase().includes('manifest'))?.href;
-    const manifestIcon = manifestHref ? await resolveManifestIcon(absoluteUrl(manifestHref, siteUrl), siteUrl) : '';
-    if (manifestIcon) return manifestIcon;
-
-    const icon = links
-      .filter((attrs) => attrs.href && attrs.rel?.toLowerCase().includes('icon'))
-      .map((attrs) => ({
-        href: attrs.href,
-        rel: attrs.rel.toLowerCase(),
-        sizes: attrs.sizes ?? '',
-      }))
-      .sort((a, b) => iconScore(b) - iconScore(a))[0];
-    return icon ? absoluteUrl(icon.href, siteUrl) : `${new URL(siteUrl).origin}/favicon.ico`;
-  } catch {
-    try {
-      return `${new URL(siteUrl).origin}/favicon.ico`;
-    } catch {
-      return '';
-    }
-  }
+function logoEndpoint(siteUrl, version) {
+  return `/api/vercel/logo?url=${encodeURIComponent(siteUrl)}&v=${encodeURIComponent(String(version ?? ''))}`;
 }
 
 function deploymentUrl(project) {
@@ -252,14 +176,13 @@ export default async function handler(req, res) {
 
     const apps = await mapLimit(projectApps, 8, async (project) => {
       const url = deploymentUrl(project);
-      const logoUrl = await resolveLogoUrl(url);
       return {
         id: `vercel-${project.id ?? project.name}`,
         projectId: project.id ?? '',
         slug: project.name,
         name: humanize(project.name ?? 'Vercel App'),
         url,
-        logoUrl,
+        logoUrl: logoEndpoint(url, project.updatedAt ?? project.createdAt ?? project.id),
         icon: pickIcon(project.name ?? ''),
         gradient: pickGradient(project.name ?? ''),
         updatedAt: project.updatedAt ?? project.createdAt ?? 0,

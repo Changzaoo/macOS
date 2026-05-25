@@ -92,6 +92,24 @@ const BlockedScreen: React.FC<{ url: string }> = ({ url }) => (
   </div>
 );
 
+const AccessHint: React.FC<{ url: string }> = ({ url }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10, scale: 0.96 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, y: 10, scale: 0.96 }}
+    className="absolute right-4 bottom-4 z-20 rounded-2xl p-2 popup-glass"
+  >
+    <button
+      type="button"
+      onClick={() => globalThis.open(url, '_blank')}
+      className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-white hover:bg-white/10"
+    >
+      <ExternalLink size={13} />
+      Abrir site
+    </button>
+  </motion.div>
+);
+
 export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
   const {
     closeWindow,
@@ -111,6 +129,7 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [progress, setProgress] = useState(0);
   const [logoFailed, setLogoFailed] = useState(false);
+  const [showAccessHint, setShowAccessHint] = useState(false);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const urlInputRef = useRef<HTMLInputElement>(null);
@@ -119,16 +138,28 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
 
   useEffect(() => {
     if (win.isInternal) return;
+    const showTimer = setTimeout(() => setShowAccessHint(true), 0);
+    const hintTimer = setTimeout(() => setShowAccessHint(false), 12_000);
+    return () => {
+      clearTimeout(showTimer);
+      clearTimeout(hintTimer);
+    };
+  }, [currentUrl, iframeKey, win.isInternal]);
+
+  useEffect(() => {
+    if (win.isInternal) return;
     if (loadState === 'loading') {
       const t0 = setTimeout(() => setProgress(10), 0);
       const t1 = setTimeout(() => setProgress(45), 300);
       const t2 = setTimeout(() => setProgress(72), 900);
       const t3 = setTimeout(() => setProgress(90), 2000);
+      const blocked = setTimeout(() => setLoadState('blocked'), 12_000);
       return () => {
         clearTimeout(t0);
         clearTimeout(t1);
         clearTimeout(t2);
         clearTimeout(t3);
+        clearTimeout(blocked);
       };
     }
     if (loadState === 'loaded' || loadState === 'blocked') {
@@ -359,6 +390,9 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
             <BlockedScreen url={currentUrl} />
           ) : (
             <>
+              <AnimatePresence>
+                {showAccessHint && <AccessHint url={currentUrl} />}
+              </AnimatePresence>
               {loadState === 'loading' && (
                 <div
                   className="absolute inset-0 flex flex-col items-center justify-center z-10"

@@ -57,6 +57,8 @@ npm run build
 
 O dock consulta uma API serverless em `/api/vercel/projects`, lista seus projetos Vercel e usa o favicon/manifest real de cada app como logo. Novos projetos publicados aparecem automaticamente no dock após a próxima sincronização.
 
+Em desenvolvimento, `npm run dev` também expõe `/api/vercel/projects` e `/api/vercel/logo`, então o dock consegue sincronizar localmente quando `VERCEL_TOKEN` estiver no `.env`.
+
 Variáveis server-side:
 
 | Variável | Uso |
