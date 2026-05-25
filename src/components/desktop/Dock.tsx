@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Icons from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Plus, Trash2 } from 'lucide-react';
+import { ExternalLink, Plus, RefreshCw, Trash2 } from 'lucide-react';
 import { useDesktop } from '../../contexts/DesktopContext';
 import { usePermissions } from '../../hooks/usePermissions';
 import { apps } from '../../config/apps';
@@ -28,9 +28,26 @@ type DockItem = {
   name: string;
   icon: string;
   url?: string;
+  logoUrl?: string;
   gradient?: string;
   isCustom: boolean;
+  source: 'builtin' | 'custom' | 'vercel';
+  vercelProjectUrl?: string;
+  gitRepo?: string;
 };
+
+function hostOf(url?: string) {
+  try {
+    return url ? new URL(url).hostname.replace(/^www\./, '') : '';
+  } catch {
+    return '';
+  }
+}
+
+function sameProjectName(left: string, right: string) {
+  const clean = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
+  return clean(left) === clean(right) || clean(left).includes(clean(right)) || clean(right).includes(clean(left));
+}
 
 const DockIcon: React.FC<{
   item: DockItem;
@@ -41,9 +58,12 @@ const DockIcon: React.FC<{
   onClick: () => void;
   onContextMenu: (e: React.MouseEvent) => void;
 }> = ({ item, scale, y, isOpen, onClick, onContextMenu }) => {
+  const [logoError, setLogoError] = useState(false);
   const [faviconError, setFaviconError] = useState(false);
   const IconComponent = (Icons as unknown as Record<string, LucideIcon>)[item.icon] ?? Icons.Globe;
-  const faviconUrl = item.url && !faviconError ? getFaviconUrl(item.url, 128) : '';
+  const exactLogoUrl = item.logoUrl && !logoError ? item.logoUrl : '';
+  const faviconUrl = !exactLogoUrl && item.url && !faviconError ? getFaviconUrl(item.url, 128) : '';
+  const imageUrl = exactLogoUrl || faviconUrl;
   const bg = item.gradient ?? 'linear-gradient(145deg, #475569, #1e293b)';
 
   return (
@@ -59,7 +79,7 @@ const DockIcon: React.FC<{
         transformOrigin: 'bottom center',
         cursor: 'pointer',
         borderRadius: 15,
-        background: faviconUrl
+        background: imageUrl
           ? 'linear-gradient(145deg, rgba(255,255,255,0.96), rgba(255,255,255,0.78))'
           : bg,
         border: '1px solid rgba(255,255,255,0.26)',
@@ -75,13 +95,16 @@ const DockIcon: React.FC<{
       }}
       whileTap={{ scale: scale * 0.92 }}
     >
-      {faviconUrl ? (
+      {imageUrl ? (
         <img
-          src={faviconUrl}
+          src={imageUrl}
           alt={item.name}
           width={38}
           height={38}
-          onError={() => setFaviconError(true)}
+          onError={() => {
+            if (exactLogoUrl) setLogoError(true);
+            else setFaviconError(true);
+          }}
           style={{ objectFit: 'contain', borderRadius: 8 }}
         />
       ) : (
@@ -92,7 +115,7 @@ const DockIcon: React.FC<{
 };
 
 export const Dock: React.FC = () => {
-  const { windows, openApp, customApps, removeCustomApp } = useDesktop();
+  const { windows, openApp, customApps, removeCustomApp, vercelApps, vercelSync, refreshVercelApps } = useDesktop();
   const { canOpenApp } = usePermissions();
   const dockRef = useRef<HTMLDivElement>(null);
   const [mouseX, setMouseX] = useState<number | null>(null);
@@ -102,9 +125,54 @@ export const Dock: React.FC = () => {
 
   const allowedBuiltIn = apps.filter((a) => canOpenApp(a.permissionKey as keyof AppPermissions));
 
+  const builtinMatches = new Map<string, string>();
+  const builtInItems: DockItem[] = allowedBuiltIn.map((app) => {
+    const match = vercelApps.find((vercelApp) =>
+      hostOf(vercelApp.url) === hostOf(app.url) || sameProjectName(vercelApp.name, app.name) || sameProjectName(vercelApp.slug, app.id)
+    );
+    if (match) builtinMatches.set(match.id, app.id);
+    return {
+      id: app.id,
+      name: app.name,
+      icon: app.icon,
+      url: match?.url ?? app.url,
+      logoUrl: match?.logoUrl,
+      gradient: app.gradient,
+      isCustom: false,
+      source: match ? 'vercel' : 'builtin',
+      vercelProjectUrl: match?.vercelProjectUrl,
+      gitRepo: match?.gitRepo,
+    };
+  });
+
+  const dynamicVercelItems: DockItem[] = vercelApps
+    .filter((app) => !builtinMatches.has(app.id))
+    .map((app) => ({
+      id: app.id,
+      name: app.name,
+      icon: app.icon,
+      url: app.url,
+      logoUrl: app.logoUrl,
+      gradient: app.gradient,
+      isCustom: false,
+      source: 'vercel',
+      vercelProjectUrl: app.vercelProjectUrl,
+      gitRepo: app.gitRepo,
+    }));
+
   const allItems: DockItem[] = [
-    ...allowedBuiltIn.map((a) => ({ id: a.id, name: a.name, icon: a.icon, url: a.url, gradient: a.gradient, isCustom: false })),
-    ...customApps.map((a) => ({ id: a.id, name: a.name, icon: a.icon, url: a.url, isCustom: true })),
+    ...builtInItems,
+    ...dynamicVercelItems,
+    ...customApps.map((app) => ({
+      id: app.id,
+      name: app.name,
+      icon: app.icon,
+      url: app.url,
+      logoUrl: app.logoUrl,
+      gradient: app.gradient,
+      isCustom: true,
+      source: 'custom' as const,
+    })),
   ];
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -137,7 +205,7 @@ export const Dock: React.FC = () => {
               <div key={item.id} className="relative flex flex-col items-center">
                 {/* Context menu */}
                 <AnimatePresence>
-                  {rightClickApp === item.id && item.isCustom && (
+                  {rightClickApp === item.id && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.88, y: 6 }}
                       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -145,9 +213,36 @@ export const Dock: React.FC = () => {
                       className="absolute popup-glass"
                       style={{ bottom: ICON_SIZE + 14, left: '50%', transform: 'translateX(-50%)', borderRadius: 14, padding: 4, zIndex: 200, whiteSpace: 'nowrap' }}
                     >
+                      {item.url && (
+                        <button
+                          onClick={() => { globalThis.open(item.url, '_blank'); setRightClickApp(null); }}
+                          className="flex w-full items-center gap-2 px-3 py-1.5 rounded-xl text-white/75 hover:bg-white/10 text-xs transition-colors"
+                        >
+                          <ExternalLink size={12} />
+                          Abrir site
+                        </button>
+                      )}
+                      {item.vercelProjectUrl && (
+                        <button
+                          onClick={() => { globalThis.open(item.vercelProjectUrl, '_blank'); setRightClickApp(null); }}
+                          className="flex w-full items-center gap-2 px-3 py-1.5 rounded-xl text-white/75 hover:bg-white/10 text-xs transition-colors"
+                        >
+                          <ExternalLink size={12} />
+                          Vercel
+                        </button>
+                      )}
+                      {item.source === 'vercel' && (
+                        <button
+                          onClick={() => { void refreshVercelApps(); setRightClickApp(null); }}
+                          className="flex w-full items-center gap-2 px-3 py-1.5 rounded-xl text-white/75 hover:bg-white/10 text-xs transition-colors"
+                        >
+                          <RefreshCw size={12} className={vercelSync.status === 'syncing' ? 'animate-spin' : ''} />
+                          Sincronizar
+                        </button>
+                      )}
                       <button
                         onClick={() => { removeCustomApp(item.id); setRightClickApp(null); }}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-red-300 hover:bg-red-500/10 text-xs transition-colors"
+                        className={`${item.isCustom ? 'flex' : 'hidden'} w-full items-center gap-2 px-3 py-1.5 rounded-xl text-red-300 hover:bg-red-500/10 text-xs transition-colors`}
                       >
                         <Trash2 size={12} />
                         Remover

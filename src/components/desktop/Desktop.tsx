@@ -33,7 +33,7 @@ export const Desktop: React.FC = () => {
 };
 
 const DesktopWidgets: React.FC = () => {
-  const { windows } = useDesktop();
+  const { windows, widgetsVisible, arrangeWindows } = useDesktop();
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -45,27 +45,33 @@ const DesktopWidgets: React.FC = () => {
   const date = now.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
   const openWindows = windows.filter((win) => !win.isMinimized).length;
 
+  if (!widgetsVisible) return null;
+
   return (
-    <div className="desktop-widgets desktop-layer" aria-hidden="true">
-      <div className="liquid-widget">
+    <div className="desktop-widgets desktop-layer">
+      <button type="button" className="liquid-widget text-left pointer-events-auto">
         <div className="flex items-center justify-between text-white/70">
           <span className="widget-label">Hoje</span>
           <CalendarDays size={16} />
         </div>
         <div className="widget-value mt-3 text-3xl capitalize leading-none">{day}</div>
         <div className="text-white/60 text-sm mt-1 capitalize">{date}</div>
-      </div>
+      </button>
 
-      <div className="liquid-widget">
+      <button type="button" className="liquid-widget text-left pointer-events-auto">
         <div className="flex items-center justify-between text-white/70">
           <span className="widget-label">Tempo</span>
           <CloudSun size={17} />
         </div>
         <div className="widget-value mt-3 text-3xl leading-none">24 C</div>
         <div className="text-white/60 text-sm mt-1">Sao Paulo</div>
-      </div>
+      </button>
 
-      <div className="liquid-widget wide flex items-center justify-between gap-3">
+      <button
+        type="button"
+        onClick={arrangeWindows}
+        className="liquid-widget wide flex items-center justify-between gap-3 text-left pointer-events-auto"
+      >
         <div>
           <div className="widget-label">Sessao</div>
           <div className="widget-value text-xl mt-1">{openWindows || 'Pronto'}</div>
@@ -74,7 +80,7 @@ const DesktopWidgets: React.FC = () => {
           style={{ background: 'linear-gradient(145deg, rgba(94,234,212,0.34), rgba(96,165,250,0.2))' }}>
           <Activity size={20} />
         </div>
-      </div>
+      </button>
     </div>
   );
 };

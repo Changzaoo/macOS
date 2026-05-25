@@ -50,7 +50,23 @@ npm run build
 1. Faça push do repositório para o GitHub
 2. Importe o projeto na [Vercel](https://vercel.com)
 3. Configure as variáveis de ambiente (`VITE_FIREBASE_*`) no painel da Vercel
-4. Deploy automático
+4. Configure `VERCEL_TOKEN` para ativar o dock automático com seus projetos Vercel
+5. Deploy automático
+
+## Dock automático da Vercel
+
+O dock consulta uma API serverless em `/api/vercel/projects`, lista seus projetos Vercel e usa o favicon/manifest real de cada app como logo. Novos projetos publicados aparecem automaticamente no dock após a próxima sincronização.
+
+Variáveis server-side:
+
+| Variável | Uso |
+|----------|-----|
+| `VERCEL_TOKEN` | Token da Vercel com permissão para listar projetos |
+| `VERCEL_TEAM_ID` | Opcional, força a busca em um time específico |
+| `VERCEL_TEAM_SLUG` | Opcional, cria links diretos para o painel da Vercel |
+| `VERCEL_DOCK_LIMIT` | Quantidade máxima de projetos, padrão `100` |
+| `VERCEL_DOCK_EXCLUDE_PROJECTS` | IDs ou nomes separados por vírgula para ocultar |
+| `VERCEL_DOCK_INCLUDE_SELF` | Use `true` para mostrar o próprio projeto macOS no dock |
 
 ## Primeiro acesso
 

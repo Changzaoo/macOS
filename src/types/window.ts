@@ -5,6 +5,7 @@ export type WindowState = {
   url: string;
   currentUrl: string;
   icon: string;
+  logoUrl?: string;
   x: number;
   y: number;
   width: number;
@@ -22,5 +23,11 @@ export type CustomApp = {
   name: string;
   url: string;
   icon: string;
+  logoUrl?: string;
+  gradient?: string;
+  source?: 'custom' | 'vercel';
+  projectId?: string;
+  vercelProjectUrl?: string;
+  gitRepo?: string;
   createdAt: string;
 };

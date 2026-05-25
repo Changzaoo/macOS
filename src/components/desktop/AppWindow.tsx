@@ -110,6 +110,7 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
   const [iframeKey, setIframeKey] = useState(0);
   const [loadState, setLoadState] = useState<LoadState>('loading');
   const [progress, setProgress] = useState(0);
+  const [logoFailed, setLogoFailed] = useState(false);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const urlInputRef = useRef<HTMLInputElement>(null);
@@ -367,7 +368,18 @@ export const AppWindow: React.FC<AppWindowProps> = ({ window: win }) => {
                     className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
                     style={{ background: 'linear-gradient(145deg, #6ee7f9, #60a5fa 46%, #f0abfc)', boxShadow: '0 12px 34px rgba(96,165,250,0.34)' }}
                   >
-                    <IconComponent size={22} className="text-white" />
+                    {win.logoUrl && !logoFailed ? (
+                      <img
+                        src={win.logoUrl}
+                        alt={win.title}
+                        width={28}
+                        height={28}
+                        className="rounded-lg object-contain"
+                        onError={() => setLogoFailed(true)}
+                      />
+                    ) : (
+                      <IconComponent size={22} className="text-white" />
+                    )}
                   </div>
                   <p className="text-white/40 text-xs">{displayDomain()}</p>
                 </div>
