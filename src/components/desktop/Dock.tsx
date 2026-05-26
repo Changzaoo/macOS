@@ -136,7 +136,7 @@ export const Dock: React.FC = () => {
       id: app.id,
       name: app.name,
       icon: app.icon,
-      url: match?.canonicalUrl || match?.url || app.url,
+      url: match?.url || app.url,
       logoUrl: match?.logoUrl,
       gradient: app.gradient,
       isCustom: false,

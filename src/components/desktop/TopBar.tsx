@@ -178,7 +178,7 @@ export const TopBar: React.FC = () => {
         id: app.id,
         name: app.name,
         icon: app.icon,
-        url: match?.canonicalUrl || match?.url || app.url,
+        url: match?.url || app.url,
         fallbackUrl: match?.fallbackUrl,
         logoUrl: match?.logoUrl,
         source: match ? 'vercel' as const : 'builtin' as const,

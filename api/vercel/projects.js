@@ -89,12 +89,7 @@ function logoEndpoint(siteUrl, version, name) {
   return `/api/vercel/logo?${params.toString()}`;
 }
 
-function simpleProjectUrl(project) {
-  const name = typeof project.name === 'string' ? project.name.trim() : '';
-  return name ? normalizeUrl(`${name}.vercel.app`) : '';
-}
-
-function fallbackDeploymentUrl(project) {
+function deploymentUrl(project) {
   const latestDeployments = Array.isArray(project.latestDeployments) ? project.latestDeployments : [];
   const production = latestDeployments.find((item) => item?.target === 'production' && item?.state === 'READY');
   const ready = latestDeployments.find((item) => item?.state === 'READY');
@@ -107,10 +102,6 @@ function fallbackDeploymentUrl(project) {
     project.alias?.[0],
   ];
   return candidates.map(normalizeUrl).find(Boolean) ?? '';
-}
-
-function deploymentUrl(project) {
-  return simpleProjectUrl(project) || fallbackDeploymentUrl(project);
 }
 
 function projectDashboardUrl(project, teamSlug) {
@@ -190,15 +181,14 @@ export default async function handler(req, res) {
 
     const apps = await mapLimit(projectApps, 8, async (project) => {
       const url = deploymentUrl(project);
-      const fallbackUrl = fallbackDeploymentUrl(project);
       return {
         id: `vercel-${project.id ?? project.name}`,
         projectId: project.id ?? '',
         slug: project.name,
         name: humanize(project.name ?? 'Vercel App'),
         url,
-        canonicalUrl: simpleProjectUrl(project),
-        fallbackUrl,
+        canonicalUrl: url,
+        fallbackUrl: '',
         logoUrl: logoEndpoint(url, project.updatedAt ?? project.createdAt ?? project.id, project.name),
         icon: pickIcon(project.name ?? ''),
         gradient: pickGradient(project.name ?? ''),
