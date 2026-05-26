@@ -1,0 +1,9 @@
+{
+  "deployment": "forced-production-refresh",
+  "updatedAt": "2026-05-26T00:09:45Z",
+  "contains": [
+    "exact-vercel-project-urls",
+    "improved-logo-discovery",
+    "maximized-app-windows"
+  ]
+}
