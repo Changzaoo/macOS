@@ -79,8 +79,14 @@ async function fetchWithTimeout(url, options = {}, timeout = 5000) {
   }
 }
 
-function logoEndpoint(siteUrl, version) {
-  return `/api/vercel/logo?url=${encodeURIComponent(siteUrl)}&v=${encodeURIComponent(String(version ?? ''))}`;
+function logoEndpoint(siteUrl, version, name) {
+  const params = new URLSearchParams({
+    url: siteUrl,
+    v: String(version ?? ''),
+    name: name ?? '',
+    resolver: '2',
+  });
+  return `/api/vercel/logo?${params.toString()}`;
 }
 
 function simpleProjectUrl(project) {
@@ -193,7 +199,7 @@ export default async function handler(req, res) {
         url,
         canonicalUrl: simpleProjectUrl(project),
         fallbackUrl,
-        logoUrl: logoEndpoint(url, project.updatedAt ?? project.createdAt ?? project.id),
+        logoUrl: logoEndpoint(url, project.updatedAt ?? project.createdAt ?? project.id, project.name),
         icon: pickIcon(project.name ?? ''),
         gradient: pickGradient(project.name ?? ''),
         updatedAt: project.updatedAt ?? project.createdAt ?? 0,
